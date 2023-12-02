@@ -2,7 +2,17 @@
 ## Getting started
 Follow these steps to set up Docker for this project
 
-## Step 1: Set up Docker for MySQL
+## Step 1: Clone this project
+
+## Step 2: Install project
+### 1. Open project's directory in terminal
+### 2. Clean and Install to generate .jar file
+```bash
+mvn clean install
+```
+**_Note_**: Ensure that you have installed Maven on your device
+
+## Step 3: Set up Docker for MySQL
 ### 1. Pull MySQL Image
 ```bash
 docker pull mysql:latest
@@ -27,13 +37,24 @@ docker run \
 * _your_password_: Replace with the password for the MySQL user.
 * _host_port:container_port_: Map a port from the host to the container for MySQL. Replace host_port and container_port with the desired values.
 
-## Step 2: Set up Docker for Spring boot
+**_Note_**: If you use root user, please remove MYSQL_USER and MYSQL_PASSWORD, add MYSQL_ALLOW_EMPTY_PASSWORD=true
+
+## Step 4: Set up Docker for Spring boot
 ### 1. Build Docker image
 ```bash
 docker build -t your_image_name .
 ```
 
-### 2. Run Docker container
+### 2. Create network
+```bash
+docker network create <network-name>
+```
+Check if creating network successfully
+```bash
+docker network ls
+```
+
+### 3. Run Docker container
 ```bash
 docker run \
     --name your_container_name \
