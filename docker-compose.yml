@@ -1,0 +1,31 @@
+version: "3.7"
+services:
+  api_service:
+    build: .
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - springboot-mysql-net
+    environment:
+      - spring.datasource.url=jdbc:mysql://mysqldb:3306/cms?allowPublicKeyRetrieval=true    
+    depends_on:
+      - mysqldb
+    
+    volumes:
+      - .m2:/root/.m2
+      
+  mysqldb:
+    image: "mysql:8.0"
+    restart: always
+    ports:
+      - 3306:3306
+    networks:
+      - springboot-mysql-net
+    environment:
+      MYSQL_DATABASE: cms
+      MYSQL_USER: ${DATABASE_USERNAME}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+networks:
+  springboot-mysql-net:
