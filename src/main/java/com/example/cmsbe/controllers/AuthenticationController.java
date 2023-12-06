@@ -64,7 +64,7 @@ public class AuthenticationController {
                         UserType.EMPLOYEE,
                         "1001",
                         1000.0,
-                        new Date(),
+                         LocalDate.now(),
                         EmployeeType.SALE
                 )
         );
@@ -80,7 +80,7 @@ public class AuthenticationController {
                         UserType.EMPLOYEE,
                         "1002",
                         1000.0,
-                        new Date(),
+                        LocalDate.now(),
                         EmployeeType.WAREHOUSE
                 )
         );
@@ -96,7 +96,7 @@ public class AuthenticationController {
                         UserType.MANAGER,
                         null,
                         null,
-                        new Date(),
+                        LocalDate.now(),
                         null
                 )
         );
