@@ -38,6 +38,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
             ) {
+        System.out.println("AUTHENTICATE");
         try {
         return ResponseEntity.ok(authService.authenticate(request));
         } catch (UsernameNotFoundException e) {
