@@ -5,15 +5,13 @@ import com.example.cmsbe.models.OrderItem;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.repositories.OrderRepository;
 import com.example.cmsbe.services.interfaces.IOrderService;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.PersistenceUnit;
+import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,6 +23,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
+//    private final UserRepository userRepository;
+//    private final CustomerRepository customerRepository;
+//    private final ProductRepository productRepository;
+
     @PersistenceContext
     private EntityManager entityManager;
 
@@ -36,8 +38,8 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Optional<Order> getOrderById(Integer id) {
-        return orderRepository.findById(id);
+    public Order getOrderById(Integer id) {
+        return orderRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Order with ID " + id + " not found."));
     }
 
     @Override
@@ -65,13 +67,44 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Order updateOrder(Integer orderId, Order order) {
-        return null;
+    public Order updateOrder(Integer orderId, OrderStatus newStatus) {
+        Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order with ID" + orderId + " not found."));
+        order.setStatus(newStatus);
+        return orderRepository.save(order);
+
+//        Order order = optionalOrder.get();
+//        if (orderUpdateDTO.getCreatedTime() != null) {
+//            order.setCreatedTime(orderUpdateDTO.getCreatedTime());
+//        }
+//        if (orderUpdateDTO.getDepositedMoney() != null) {
+//            order.setDepositedMoney(orderUpdateDTO.getDepositedMoney());
+//        }
+//        if (orderUpdateDTO.getDiscount() != null) {
+//            order.setDiscount(orderUpdateDTO.getDiscount());
+//        }
+//        if (orderUpdateDTO.getStatus() != null) {
+//            order.setStatus(orderUpdateDTO.getStatus());
+//        }
+//        if (orderUpdateDTO.getCreatedUserId() != null) {
+//            Optional<User> optionalCreatedUser = userRepository.findById(orderUpdateDTO.getCreatedUserId());
+//            optionalCreatedUser.ifPresent(order::setCreatedUser);
+//        }
+//        if (orderUpdateDTO.getCustomerId() != null) {
+//            Optional<Customer> optionalCustomer = customerRepository.findById(orderUpdateDTO.getCustomerId());
+//            optionalCustomer.ifPresent(order::setCustomer);
+//        }
+//        if (orderUpdateDTO.getOrderItems() != null) {
+//            List<OrderItem> updatedOrderItems = new ArrayList<>();
+//            for (var orderItemDTO : orderUpdateDTO.getOrderItems()) {
+//                productRepository.findById(order)
+//            }
+//        }
+//        return orderRepository.save(order);
     }
 
     @Override
     public void deleteOrder(Integer orderId) {
-
+        orderRepository.deleteById(orderId);
     }
 
     @Override
@@ -83,4 +116,33 @@ public class OrderService implements IOrderService {
     public List<Order> searchByCustomerNameAndStatusAndCreatedTime(int page, int size, String customerName, OrderStatus status, LocalDate startDate, LocalDate endDate) {
         return null;
     }
+
+    @Override
+    public List<Order> searchWithFilter(int page, int size, Integer id, String customerName, OrderStatus status, LocalDate startDate, LocalDate endDate) {
+        Specification<Order> spec = Specification.where(null);
+        if (id != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("id"), id));
+        }
+        if (customerName != null && !customerName.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.like(root.get("customer").get("name"), "%" + customerName + "%"));
+        }
+        if (status != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.equal(root.get("status"), status));
+        }
+        if (startDate != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.greaterThan(root.get("createdTime"), startDate));
+        }
+        if (endDate != null) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.lessThan(root.get("createdTime"), endDate));
+        }
+        Pageable pageable = PageRequest.of(page, size);
+        return orderRepository.findAll(spec, pageable).getContent();
+    }
+
+
 }

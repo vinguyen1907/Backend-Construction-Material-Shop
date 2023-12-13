@@ -1,13 +1,16 @@
 package com.example.cmsbe.controllers;
 
 import com.example.cmsbe.models.Order;
+import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.services.OrderService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -17,15 +20,27 @@ public class OrderController {
 
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrders(
-            @RequestParam int page,
-            @RequestParam int size
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) Integer id,
+            @RequestParam(required = false) String customerName,
+            @RequestParam(required = false) OrderStatus status,
+            @RequestParam(required = false) LocalDate startDate,
+            @RequestParam(required = false) LocalDate endDate
     ) {
-        return ResponseEntity.ok(orderService.getAllOrders(page, size));
+        if (id != null || customerName != null || status != null || startDate != null || endDate != null) {
+            return ResponseEntity.ok(orderService.searchWithFilter(page, size, id, customerName, status, startDate, endDate));
+        }
+        return  ResponseEntity.ok(orderService.getAllOrders(page, size));
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<Optional<Order>> getOrderById(@PathVariable Integer orderId) {
-        return ResponseEntity.ok(orderService.getOrderById(orderId));
+    public ResponseEntity<?> getOrderById(@PathVariable Integer orderId) {
+        try {
+            return ResponseEntity.ok(orderService.getOrderById(orderId));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @PostMapping
@@ -34,12 +49,15 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<Order> updateOrder(@PathVariable Integer orderId, @RequestBody Order order) {
-        var result = orderService.updateOrder(orderId, order);
-        if (result == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> updateOrder(@PathVariable Integer orderId, @RequestParam(name = "status") OrderStatus newStatus) {
+        try {
+            var result = orderService.updateOrder(orderId, newStatus);
+            return ResponseEntity.ok(result);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok(orderService.updateOrder(orderId, order));
     }
 
     @DeleteMapping("/{orderId}")
