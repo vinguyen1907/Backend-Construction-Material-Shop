@@ -38,6 +38,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
             ) {
+        System.out.println("AUTHENTICATE");
         try {
         return ResponseEntity.ok(authService.authenticate(request));
         } catch (UsernameNotFoundException e) {
@@ -62,7 +63,7 @@ public class AuthenticationController {
                         LocalDate.of(2000, 12, 30),
                         "Contact address 1",
                         UserType.EMPLOYEE,
-                        "1001",
+                        null,
                         1000.0,
                          LocalDate.now(),
                         EmployeeType.SALE
@@ -78,7 +79,7 @@ public class AuthenticationController {
                         LocalDate.of(2000, 12, 30),
                         "Contact address 2",
                         UserType.EMPLOYEE,
-                        "1002",
+                        null,
                         1000.0,
                         LocalDate.now(),
                         EmployeeType.WAREHOUSE
