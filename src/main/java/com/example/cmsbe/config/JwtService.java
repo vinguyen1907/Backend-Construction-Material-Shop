@@ -60,6 +60,8 @@ public class JwtService {
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String userEmail = extractUserEmail(token);
+        System.out.print("EMAIL -- " + userEmail + " -- TOKEN ");
+        System.out.println(userEmail.equals(userDetails.getUsername()) ? "VALID" : "NOT VALID");
         return userEmail.equals(userDetails.getUsername());
     }
 }

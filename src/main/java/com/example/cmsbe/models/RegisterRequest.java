@@ -26,6 +26,6 @@ public class RegisterRequest {
     private UserType userType;
     private String employeeCode;
     private Double salary;
-    private Date startedWorkingDate;
+    private LocalDate startedWorkingDate;
     private EmployeeType employeeType;
 }
