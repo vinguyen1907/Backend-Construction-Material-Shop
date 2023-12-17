@@ -18,13 +18,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService  implements IAuthenticationService {
+public class AuthenticationService implements IAuthenticationService {
     private final UserRepository userRepository;
     private final AuthenticationManager authManager;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationResponse register(RegisterRequest request)  {
+    public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
@@ -34,12 +34,15 @@ public class AuthenticationService  implements IAuthenticationService {
                 .dateOfBirth(request.getDateOfBirth())
                 .contactAddress(request.getContactAddress())
                 .userType(request.getUserType())
-                .employeeCode(request.getEmployeeCode())
+//                .employeeCode(request.getEmployeeCode())
                 .salary(request.getSalary())
                 .startedWorkingDate(request.getStartedWorkingDate())
                 .employeeType(request.getEmployeeType())
                 .build();
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
+        savedUser.generateEmployeeCode();
+        userRepository.save(savedUser);
+
         String jwtToken = jwtService.generateToken(user);
         return new AuthenticationResponse(jwtToken, null, user);
     }

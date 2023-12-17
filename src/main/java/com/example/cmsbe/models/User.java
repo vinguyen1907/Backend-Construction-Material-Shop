@@ -8,13 +8,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.aspectj.lang.annotation.Before;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -42,13 +42,33 @@ public class User implements UserDetails {
     private String employeeCode;
     private Double salary;
     @Column(name = "started_working_date")
-    private Date startedWorkingDate;
+    private LocalDate startedWorkingDate;
     @Enumerated(EnumType.STRING)
     private EmployeeType employeeType;
 
+    public void generateEmployeeCode() {
+        if (employeeType == null) {
+            return;
+        }
+
+        switch (employeeType) {
+            case WAREHOUSE:
+                this.employeeCode = "EMPWH" + id;
+                break;
+            case SHIPPING:
+                this.employeeCode = "EMPSP" + id;
+                break;
+            default:
+                this.employeeCode = "EMPSL" + id;
+        }
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(userType.name()));
+        if (userType != null) {
+            return List.of(new SimpleGrantedAuthority(userType.name()));
+        }
+        return List.of(new SimpleGrantedAuthority(UserType.EMPLOYEE.name()));
     }
 
     @Override
