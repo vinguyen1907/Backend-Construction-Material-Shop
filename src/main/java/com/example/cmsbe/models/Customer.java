@@ -6,6 +6,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DialectOverride;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
+import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
 
@@ -14,6 +18,8 @@ import java.time.LocalDate;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@SQLDelete(sql = "UPDATE customer SET is_deleted = true WHERE id = ?")
+@SQLRestriction("is_deleted = false")
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -26,5 +32,5 @@ public class Customer {
     @Column(length = 200)
     private String contactAddress;
     private String taxCode;
-
+    private boolean isDeleted = false;
 }
