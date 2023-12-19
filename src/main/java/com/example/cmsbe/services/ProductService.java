@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProductService implements IProductService {
     private final ProductRepository repository;
+    private final CloudinaryService cloudinaryService;
 
     @Override
     public List<Product> getAllProducts() {
@@ -33,18 +35,31 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product updateProduct(Integer productId, Product product) {
-        if (repository.existsById(product.getId())) {
-            product.setId(productId);
-            return repository.save(product);
-        } else {
-            throw new EntityNotFoundException("Product not found");
+    public Product updateProduct(
+            Integer productId,
+            String name,
+            String origin,
+            String description,
+            Double unitPrice,
+            String calculationUnit,
+            MultipartFile image
+    ) {
+        var product = repository.findById(productId).orElseThrow(() -> new EntityNotFoundException("Product not found"));
+        if (name != null) product.setName(name);
+        if (origin != null) product.setOrigin(origin);
+        if (description != null) product.setDescription(description);
+        if (unitPrice != null) product.setUnitPrice(unitPrice);
+        if (calculationUnit != null) product.setCalculationUnit(calculationUnit);
+        if (image != null) {
+            var result = cloudinaryService.uploadFile(image, "cms/products/", product.getName());
+            product.setImageUrl((String) result.get("url"));
         }
+        return repository.save(product);
     }
 
     @Override
     public void deleteProduct(Integer id) {
-         repository.deleteById(id);
+        repository.deleteById(id);
     }
 
     @Override

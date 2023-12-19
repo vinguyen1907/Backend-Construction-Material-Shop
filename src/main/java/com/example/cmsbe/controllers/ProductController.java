@@ -62,13 +62,25 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Integer productId, @RequestBody Product product) throws EntityNotFoundException {
-        var result = productService.updateProduct(productId, product);
-        if (result == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok(result);
-        }
+    public ResponseEntity<Product> updateProduct(
+            @PathVariable Integer productId,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String origin,
+            @RequestParam(required = false) String description,
+            @RequestParam(required = false) Double unitPrice,
+            @RequestParam(required = false) String calculationUnit,
+            @RequestPart(required = false) MultipartFile image
+    ) throws EntityNotFoundException {
+        var result = productService.updateProduct(
+                productId,
+                name,
+                origin,
+                description,
+                unitPrice,
+                calculationUnit,
+                image
+        );
+        return ResponseEntity.ok(result);
     }
 
     @DeleteMapping("/{productId}")
