@@ -3,6 +3,7 @@ package com.example.cmsbe.controllers;
 import com.example.cmsbe.models.Product;
 import com.example.cmsbe.services.CloudinaryService;
 import com.example.cmsbe.services.ProductService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,10 +35,8 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<Product> getProductById(@PathVariable Integer productId) {
-        return productService.getProductById(productId)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    public ResponseEntity<Product> getProductById(@PathVariable Integer productId) throws EntityNotFoundException {
+        return ResponseEntity.ok(productService.getProductById(productId));
     }
 
     @PostMapping
@@ -63,7 +62,7 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Integer productId, @RequestBody Product product) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Integer productId, @RequestBody Product product) throws EntityNotFoundException {
         var result = productService.updateProduct(productId, product);
         if (result == null) {
             return ResponseEntity.notFound().build();

@@ -3,6 +3,7 @@ package com.example.cmsbe.services;
 import com.example.cmsbe.models.Product;
 import com.example.cmsbe.repositories.ProductRepository;
 import com.example.cmsbe.services.interfaces.IProductService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,8 +23,8 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Optional<Product> getProductById(Integer id) {
-        return repository.findById(id);
+    public Product getProductById(Integer id) {
+        return repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Product not found"));
     }
 
     @Override
@@ -36,8 +37,9 @@ public class ProductService implements IProductService {
         if (repository.existsById(product.getId())) {
             product.setId(productId);
             return repository.save(product);
+        } else {
+            throw new EntityNotFoundException("Product not found");
         }
-        return null;
     }
 
     @Override
