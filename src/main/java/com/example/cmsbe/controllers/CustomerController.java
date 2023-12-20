@@ -41,6 +41,11 @@ public class CustomerController {
             return ResponseEntity.ok(customerService.getCustomerById(customerId));
     }
 
+    @GetMapping("/{customerId}/orders")
+    public ResponseEntity<?> getCustomerOrders(@PathVariable Integer customerId) throws EntityNotFoundException{
+            return ResponseEntity.ok(customerService.getCustomerOrders(customerId));
+    }
+
     @PostMapping
     public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) {
         return ResponseEntity.ok(customerService.addCustomer(customer));
