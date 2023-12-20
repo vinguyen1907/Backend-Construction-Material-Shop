@@ -1,7 +1,9 @@
 package com.example.cmsbe.services;
 
 import com.example.cmsbe.models.Customer;
+import com.example.cmsbe.models.Order;
 import com.example.cmsbe.repositories.CustomerRepository;
+import com.example.cmsbe.repositories.OrderRepository;
 import com.example.cmsbe.services.interfaces.ICustomerService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -15,11 +17,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerService implements ICustomerService {
     private final CustomerRepository customerRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public List<Customer> getAllCustomer(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return customerRepository.findAll(pageable).getContent();
+    }
+
+    @Override
+    public List<Order> getCustomerOrders(Integer customerId) {
+        return orderRepository.findByCustomerId(customerId);
     }
 
     @Override
