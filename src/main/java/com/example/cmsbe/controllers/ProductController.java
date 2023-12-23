@@ -1,8 +1,9 @@
 package com.example.cmsbe.controllers;
 
+import com.example.cmsbe.dto.PaginationDTO;
 import com.example.cmsbe.models.Product;
 import com.example.cmsbe.services.CloudinaryService;
-import com.example.cmsbe.services.ProductService;
+import com.example.cmsbe.services.interfaces.IProductService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,11 +16,11 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
-    private final ProductService productService;
+    private final IProductService productService;
     private final CloudinaryService cloudinaryService;
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts(
+    public ResponseEntity<PaginationDTO<Product>> getAllProducts(
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam(name = "origin", required = false) String origin,
@@ -90,7 +91,7 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Product>> searchProducts(
+    public ResponseEntity<PaginationDTO<Product>> searchProducts(
             @RequestParam(name = "q") String keyword,
             @RequestParam int page,
             @RequestParam int size,
