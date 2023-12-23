@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("api/v1/customers")
 @RequiredArgsConstructor
@@ -20,34 +22,28 @@ public class CustomerController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String customerName,
             @RequestParam(required = false) String phone
-            ) {
-        try {
-            if (customerName != null ) {
+    ) {
+            if (customerName != null) {
                 return ResponseEntity.ok(customerService.searchCustomerByName(page, size, customerName));
             } else if (phone != null) {
                 return ResponseEntity.ok(customerService.searchCustomerByPhone(page, size, phone));
-            }else {
+            } else {
                 return ResponseEntity.ok(customerService.getAllCustomer(page, size));
             }
-        } catch (EntityNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e);
-        }
     }
 
     @GetMapping("/{customerId}")
-    public ResponseEntity<?> getCustomerById(@PathVariable Integer customerId) throws EntityNotFoundException{
-            return ResponseEntity.ok(customerService.getCustomerById(customerId));
+    public ResponseEntity<?> getCustomerById(@PathVariable Integer customerId) throws EntityNotFoundException {
+        return ResponseEntity.ok(customerService.getCustomerById(customerId));
     }
 
     @GetMapping("/{customerId}/orders")
-    public ResponseEntity<?> getCustomerOrders(@PathVariable Integer customerId) throws EntityNotFoundException{
-            return ResponseEntity.ok(customerService.getCustomerOrders(customerId));
+    public ResponseEntity<?> getCustomerOrders(@PathVariable Integer customerId) throws EntityNotFoundException {
+        return ResponseEntity.ok(customerService.getCustomerOrders(customerId));
     }
 
     @PostMapping
-    public ResponseEntity<Customer> addCustomer(@RequestBody Customer customer) {
+    public ResponseEntity<Customer> addCustomer(@RequestBody @Valid Customer customer) {
         return ResponseEntity.ok(customerService.addCustomer(customer));
     }
 
