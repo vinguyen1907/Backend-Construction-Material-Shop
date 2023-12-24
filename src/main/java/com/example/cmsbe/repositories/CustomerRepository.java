@@ -10,5 +10,7 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     List<Customer> findByNameContaining(String name, Pageable pageable);
+    long countByNameContaining(String name);
     List<Customer> findByPhoneContaining(String phone, Pageable pageable);
+    long countByPhoneContaining(String phone);
 }
