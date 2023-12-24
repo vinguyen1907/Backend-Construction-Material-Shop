@@ -1,6 +1,8 @@
 package com.example.cmsbe.services;
 
+import com.example.cmsbe.dto.PaginationDTO;
 import com.example.cmsbe.models.Customer;
+import com.example.cmsbe.models.InventoryItem;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.repositories.CustomerRepository;
 import com.example.cmsbe.repositories.OrderRepository;
@@ -20,9 +22,17 @@ public class CustomerService implements ICustomerService {
     private final OrderRepository orderRepository;
 
     @Override
-    public List<Customer> getAllCustomer(int page, int size) {
+    public PaginationDTO<Customer> getAllCustomer(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return customerRepository.findAll(pageable).getContent();
+        long total = customerRepository.count();
+        List<Customer> items = customerRepository.findAll(pageable).getContent();
+        return new PaginationDTO<>(
+                (long) Math.ceil((double) total / size),
+                total,
+                page,
+                size,
+                items
+        );
     }
 
     @Override
@@ -31,15 +41,31 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public List<Customer> searchCustomerByName(int page, int size, String name) {
+    public PaginationDTO<Customer> searchCustomerByName(int page, int size, String name) {
         Pageable pageable = PageRequest.of(page, size);
-        return customerRepository.findByNameContaining(name, pageable);
+        long total = customerRepository.countByNameContaining(name);
+        List<Customer> items = customerRepository.findByNameContaining(name, pageable);
+        return new PaginationDTO<>(
+                (long) Math.ceil((double) total / size),
+                total,
+                page,
+                size,
+                items
+        );
     }
 
     @Override
-    public List<Customer> searchCustomerByPhone(int page, int size, String phone) {
+    public PaginationDTO<Customer> searchCustomerByPhone(int page, int size, String phone) {
         Pageable pageable = PageRequest.of(page, size);
-        return customerRepository.findByPhoneContaining(phone, pageable);
+        long total = customerRepository.countByPhoneContaining(phone);
+        List<Customer> items = customerRepository.findByPhoneContaining(phone, pageable);
+        return new PaginationDTO<>(
+                (long) Math.ceil((double) total / size),
+                total,
+                page,
+                size,
+                items
+        );
     }
 
     @Override
