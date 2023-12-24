@@ -1,6 +1,6 @@
 package com.example.cmsbe.services;
 
-import com.example.cmsbe.dto.InventoryItemListDTO;
+import com.example.cmsbe.dto.PaginationDTO;
 import com.example.cmsbe.models.InventoryItem;
 import com.example.cmsbe.repositories.InventoryItemRepository;
 import com.example.cmsbe.services.interfaces.IInventoryItemService;
@@ -18,11 +18,11 @@ public class InventoryService implements IInventoryItemService {
     private final InventoryItemRepository inventoryItemRepository;
 
     @Override
-    public InventoryItemListDTO getAllInventoryItems(int page, int size) {
+    public PaginationDTO<InventoryItem> getAllInventoryItems(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         long total = inventoryItemRepository.count();
         List<InventoryItem> items = inventoryItemRepository.findAll(pageable).getContent();
-         return new InventoryItemListDTO(
+         return new PaginationDTO<>(
                  total / size + (total % size == 0 ? 0 : 1),
                  total,
                  page,
@@ -37,11 +37,11 @@ public class InventoryService implements IInventoryItemService {
     }
 
     @Override
-    public InventoryItemListDTO getAllInventoryItemsByProductName(String keyword, Integer warehouseId, int page, int size) {
+    public PaginationDTO<InventoryItem> getAllInventoryItemsByProductName(String keyword, Integer warehouseId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         long itemCount = inventoryItemRepository.countByProduct_NameContainingIgnoreCaseAndWarehouse_Id(keyword, warehouseId);
         List<InventoryItem> items = inventoryItemRepository.findByProduct_NameContainingIgnoreCaseAndWarehouse_Id(keyword, warehouseId, pageable);
-        return new InventoryItemListDTO(
+        return new PaginationDTO<>(
                 itemCount / size + (itemCount % size == 0 ? 0 : 1),
                 itemCount,
                 page,

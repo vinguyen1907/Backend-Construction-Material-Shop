@@ -1,10 +1,9 @@
 package com.example.cmsbe.controllers;
 
-import com.example.cmsbe.dto.InventoryItemListDTO;
+import com.example.cmsbe.dto.PaginationDTO;
 import com.example.cmsbe.models.InventoryItem;
 import com.example.cmsbe.services.interfaces.IInventoryItemService;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,7 @@ public class InventoryItemController {
     private final IInventoryItemService inventoryItemService;
 
     @GetMapping
-    public ResponseEntity<InventoryItemListDTO> getAllInventoryItems(
+    public ResponseEntity<PaginationDTO<InventoryItem>> getAllInventoryItems(
             @RequestParam int page,
             @RequestParam int size
     ) {
@@ -31,7 +30,7 @@ public class InventoryItemController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<InventoryItemListDTO> getInventoryItemsByProductId(
+    public ResponseEntity<PaginationDTO<InventoryItem>> getInventoryItemsByProductId(
             @RequestParam String keyword,
             @RequestParam(required = false) Integer warehouseId,
             @RequestParam int page,
