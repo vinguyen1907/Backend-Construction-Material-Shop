@@ -1,5 +1,6 @@
 package com.example.cmsbe.services;
 
+import com.example.cmsbe.dto.PaginationDTO;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.OrderItem;
 import com.example.cmsbe.models.enums.OrderStatus;
@@ -31,10 +32,18 @@ public class OrderService implements IOrderService {
     private EntityManager entityManager;
 
     @Override
-    public List<Order> getAllOrders(int page, int size) {
+    public PaginationDTO<Order> getAllOrders(int page, int size) {
         Sort sort = Sort.by("createdTime").descending();
         Pageable pageable = PageRequest.of(page, size).withSort(sort);
-        return orderRepository.findAll(pageable).getContent();
+        var items = orderRepository.findAll(pageable).getContent();
+        var total = orderRepository.count();
+        return new PaginationDTO<>(
+                (long) Math.ceil((double) total / size),
+                total,
+                page,
+                size,
+                items
+        );
     }
 
     @Override
@@ -108,17 +117,39 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public List<Order> searchByIdAndStatusAndCreatedTime(int page, int size, Integer id, OrderStatus status, LocalDate startDate, LocalDate endDate) {
+    public PaginationDTO<Order> searchByIdAndStatusAndCreatedTime(
+            int page,
+            int size,
+            Integer id,
+            OrderStatus status,
+            LocalDate startDate,
+            LocalDate endDate
+    ) {
         return null;
     }
 
     @Override
-    public List<Order> searchByCustomerNameAndStatusAndCreatedTime(int page, int size, String customerName, OrderStatus status, LocalDate startDate, LocalDate endDate) {
+    public PaginationDTO<Order> searchByCustomerNameAndStatusAndCreatedTime(
+            int page,
+            int size,
+            String customerName,
+            OrderStatus status,
+            LocalDate startDate,
+            LocalDate endDate
+    ) {
         return null;
     }
 
     @Override
-    public List<Order> searchWithFilter(int page, int size, Integer id, String customerName, OrderStatus status, LocalDate startDate, LocalDate endDate) {
+    public PaginationDTO<Order> searchWithFilter(
+            int page,
+            int size,
+            Integer id,
+            String customerName,
+            OrderStatus status,
+            LocalDate startDate,
+            LocalDate endDate
+    ) {
         Specification<Order> spec = Specification.where(null);
         if (id != null) {
             spec = spec.and((root, query, criteriaBuilder) ->
@@ -141,8 +172,14 @@ public class OrderService implements IOrderService {
                     criteriaBuilder.lessThan(root.get("createdTime"), endDate));
         }
         Pageable pageable = PageRequest.of(page, size);
-        return orderRepository.findAll(spec, pageable).getContent();
+        var total = orderRepository.count(spec);
+        var items = orderRepository.findAll(spec, pageable).getContent();
+        return new PaginationDTO<>(
+                (long) Math.ceil((double) total / size),
+                total,
+                page,
+                size,
+                items
+        );
     }
-
-
 }
