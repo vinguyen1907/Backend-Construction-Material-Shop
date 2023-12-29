@@ -7,6 +7,7 @@ import com.example.cmsbe.models.RegisterRequest;
 import com.example.cmsbe.models.User;
 import com.example.cmsbe.repositories.UserRepository;
 import com.example.cmsbe.services.interfaces.IAuthenticationService;
+import com.example.cmsbe.utils.AuthenticationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,12 +23,12 @@ public class AuthenticationService implements IAuthenticationService {
     private final UserRepository userRepository;
     private final AuthenticationManager authManager;
     private final JwtService jwtService;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthenticationUtil authenticationUtil;
 
     public AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .password(authenticationUtil.encodePassword(request.getPassword()))
                 .name(request.getName())
                 .imageUrl(request.getImageUrl())
                 .phone(request.getPhone())

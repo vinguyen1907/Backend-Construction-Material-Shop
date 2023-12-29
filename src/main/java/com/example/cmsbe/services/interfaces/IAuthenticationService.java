@@ -7,4 +7,5 @@ import com.example.cmsbe.models.RegisterRequest;
 public interface IAuthenticationService {
     AuthenticationResponse register(RegisterRequest request);
     AuthenticationResponse authenticate(AuthenticationRequest request);
+//    String encodePassword(String password);
 }
