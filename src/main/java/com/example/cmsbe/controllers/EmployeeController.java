@@ -73,7 +73,8 @@ public class EmployeeController {
                 null, // employeeCode
                 salary,
                 startedWorkingDate,
-                employeeType
+                employeeType,
+                false
         );
         return ResponseEntity.ok(userService.createEmployee(user));
     }
