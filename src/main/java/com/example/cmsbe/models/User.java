@@ -49,6 +49,7 @@ public class User implements UserDetails {
     private LocalDate startedWorkingDate;
     @Enumerated(EnumType.STRING)
     private EmployeeType employeeType;
+    private Boolean isDeleted = false;
 
     public void generateEmployeeCode() {
         if (employeeType == null) {

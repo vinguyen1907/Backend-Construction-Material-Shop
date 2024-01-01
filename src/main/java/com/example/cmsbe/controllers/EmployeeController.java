@@ -6,15 +6,22 @@ import com.example.cmsbe.models.User;
 import com.example.cmsbe.models.enums.EmployeeType;
 import com.example.cmsbe.models.enums.UserType;
 import com.example.cmsbe.services.CloudinaryService;
+import com.example.cmsbe.services.exporters.EmployeeExcelExporter;
 import com.example.cmsbe.services.interfaces.IUserService;
 import com.example.cmsbe.utils.AuthenticationUtil;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users/employees")
@@ -73,7 +80,8 @@ public class EmployeeController {
                 null, // employeeCode
                 salary,
                 startedWorkingDate,
-                employeeType
+                employeeType,
+                false
         );
         return ResponseEntity.ok(userService.createEmployee(user));
     }
@@ -109,5 +117,21 @@ public class EmployeeController {
     public ResponseEntity<String> deleteEmployee(@PathVariable Integer employeeId) throws EntityNotFoundException {
         userService.deleteEmployee(employeeId);
         return ResponseEntity.ok("Employee deleted successfully");
+    }
+
+    @GetMapping("/export/excel")
+    public void exportEmployeesToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=employees_" + currentDateTime + ".xlsx";
+        System.out.println(headerValue);
+        response.setHeader(headerKey, headerValue);
+
+        List<User> employees = userService.getAllEmployees(0, 1000).getResults();
+        EmployeeExcelExporter excelExporter = new EmployeeExcelExporter(employees);
+
+        excelExporter.export(response);
     }
 }
