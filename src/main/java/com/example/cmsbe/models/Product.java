@@ -26,7 +26,7 @@ public class Product {
     private String description;
     private Double unitPrice;
     private String calculationUnit;
-    private Integer quantitySolved = 0;
+    private Integer quantitySold = 0;
     private Integer quantityRemaining = 0;
     private boolean isDeleted = false;
 }
