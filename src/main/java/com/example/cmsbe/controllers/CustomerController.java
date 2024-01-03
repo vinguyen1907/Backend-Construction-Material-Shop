@@ -1,14 +1,23 @@
 package com.example.cmsbe.controllers;
 
 import com.example.cmsbe.models.Customer;
+import com.example.cmsbe.models.User;
+import com.example.cmsbe.services.generators.CustomerExcelGenerator;
+import com.example.cmsbe.services.generators.EmployeeExcelGenerator;
 import com.example.cmsbe.services.interfaces.ICustomerService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/customers")
@@ -62,5 +71,20 @@ public class CustomerController {
     public ResponseEntity<Void> deleteCustomer(@PathVariable Integer customerId) {
         customerService.deleteCustomer(customerId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/export/excel")
+    public void exportCustomerToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=customers_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<Customer> customers = customerService.getAllCustomer();
+        CustomerExcelGenerator excelExporter = new CustomerExcelGenerator(customers);
+
+        excelExporter.export(response);
     }
 }

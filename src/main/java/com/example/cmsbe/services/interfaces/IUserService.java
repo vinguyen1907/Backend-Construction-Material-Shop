@@ -6,8 +6,10 @@ import com.example.cmsbe.models.enums.EmployeeType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface IUserService {
+    List<User> getAllEmployees();
     PaginationDTO<User> getAllEmployees(int page, int size);
     PaginationDTO<User> searchEmployees(String name, String email, int page, int size);
     User createEmployee(User user);

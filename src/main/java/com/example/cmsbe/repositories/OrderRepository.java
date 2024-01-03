@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, Integer>, JpaSpecificationExecutor<Order> {
     List<Order> findByCustomerId(Integer customerId);
+    Integer countByCustomerId(Integer customerId);
 }

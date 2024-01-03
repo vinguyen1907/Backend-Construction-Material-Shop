@@ -6,12 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DialectOverride;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
-import org.hibernate.annotations.Where;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Data
@@ -32,5 +31,11 @@ public class Customer {
     @Column(length = 200)
     private String contactAddress;
     private String taxCode;
+    @OneToMany(
+            mappedBy = "customer",
+            cascade = CascadeType.PERSIST,
+            fetch = FetchType.LAZY
+    )
+    private List<Order> orders;
     private boolean isDeleted = false;
 }

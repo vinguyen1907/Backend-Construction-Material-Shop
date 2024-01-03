@@ -1,16 +1,25 @@
 package com.example.cmsbe.services.generators;
 
-import com.example.cmsbe.models.User;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.util.List;
-
-public class ExcelGenerator extends Generator {
+public abstract class ExcelGenerator extends Generator {
     protected XSSFWorkbook workbook;
     protected XSSFSheet sheet;
-    protected List<User> listUsers;
 
-    protected void writeHeaderLine() {}
-    protected  void writeDataLines() {}
+    public ExcelGenerator() {
+        workbook = new XSSFWorkbook();
+    }
+
+    protected void createNewSheet(String sheetName) {
+        sheet = workbook.createSheet(sheetName);
+    }
+
+    protected XSSFRow createRow(int rowNum) {
+        return sheet.createRow(rowNum);
+    }
+
+    protected abstract void writeHeaderLine();
+    protected abstract void writeDataLines();
 }
