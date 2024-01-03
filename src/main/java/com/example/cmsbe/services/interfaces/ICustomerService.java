@@ -7,6 +7,7 @@ import com.example.cmsbe.models.Order;
 import java.util.List;
 
 public interface ICustomerService {
+    List<Customer> getAllCustomer();
     PaginationDTO<Customer> getAllCustomer(int page, int size);
     List<Order> getCustomerOrders(Integer customerId);
     PaginationDTO<Customer> searchCustomerByName(int page, int size, String name);

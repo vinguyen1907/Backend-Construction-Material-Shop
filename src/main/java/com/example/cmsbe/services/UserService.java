@@ -14,12 +14,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
     private final UserRepository userRepository;
     private final CloudinaryService cloudinaryService;
+
+    @Override
+    public List<User> getAllEmployees() {
+        return userRepository.findByUserType(UserType.EMPLOYEE);
+    }
 
     @Override
     public PaginationDTO<User> getAllEmployees(int page, int size) {

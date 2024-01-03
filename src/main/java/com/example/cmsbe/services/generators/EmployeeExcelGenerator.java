@@ -14,16 +14,18 @@ import java.util.List;
 import static org.apache.poi.ss.util.CellUtil.createCell;
 
 public class EmployeeExcelGenerator extends ExcelGenerator {
+    protected List<User> listUsers;
+
     public EmployeeExcelGenerator(List<User> listUsers) {
+        super();
         this.listUsers = listUsers;
-        workbook = new XSSFWorkbook();
     }
 
     @Override
     protected void writeHeaderLine() {
-        sheet = workbook.createSheet("Users");
+        super.createNewSheet("Employees");
 
-        Row row = sheet.createRow(0);
+        Row row = super.createRow(0);
 
         CellStyle style = workbook.createCellStyle();
         XSSFFont font = workbook.createFont();
@@ -65,7 +67,7 @@ public class EmployeeExcelGenerator extends ExcelGenerator {
         style.setFont(font);
 
         for (User user : listUsers) {
-            Row row = sheet.createRow(rowCount++);
+            Row row = super.createRow(rowCount++);
             int columnCount = 0;
 
             createCell(row, columnCount++, user.getEmployeeCode(), style);
@@ -73,16 +75,19 @@ public class EmployeeExcelGenerator extends ExcelGenerator {
             createCell(row, columnCount++, user.getName(), style);
             sheet.autoSizeColumn(1);
             createCell(row, columnCount++, user.getEmail(), style);
+            sheet.autoSizeColumn(2);
             createCell(row, columnCount++, user.getPhone(), style);
             sheet.autoSizeColumn(3);
             createCell(row, columnCount++, user.getDateOfBirth().toString(), style);
             sheet.autoSizeColumn(4);
             createCell(row, columnCount++, user.getContactAddress(), style);
+            sheet.autoSizeColumn(5);
             createCell(row, columnCount++, user.getSalary().toString(), style);
             sheet.autoSizeColumn(6);
             createCell(row, columnCount++, user.getStartedWorkingDate().toString(), style);
             sheet.autoSizeColumn(7);
-            createCell(row, columnCount++, user.getEmployeeType().toString(), style);
+            createCell(row, columnCount, user.getEmployeeType().toString(), style);
+            sheet.autoSizeColumn(8);
         }
     }
 

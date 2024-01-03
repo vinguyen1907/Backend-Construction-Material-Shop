@@ -21,6 +21,11 @@ public class CustomerService implements ICustomerService {
     private final OrderRepository orderRepository;
 
     @Override
+    public List<Customer> getAllCustomer() {
+        return customerRepository.findAll();
+    }
+
+    @Override
     public PaginationDTO<Customer> getAllCustomer(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         long total = customerRepository.count();

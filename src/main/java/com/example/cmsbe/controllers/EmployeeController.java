@@ -126,10 +126,9 @@ public class EmployeeController {
         String currentDateTime = dateFormatter.format(new Date());
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=employees_" + currentDateTime + ".xlsx";
-        System.out.println(headerValue);
         response.setHeader(headerKey, headerValue);
 
-        List<User> employees = userService.getAllEmployees(0, 1000).getResults();
+        List<User> employees = userService.getAllEmployees();
         EmployeeExcelGenerator excelExporter = new EmployeeExcelGenerator(employees);
 
         excelExporter.export(response);
