@@ -1,5 +1,6 @@
 package com.example.cmsbe.services.interfaces;
 
+import com.example.cmsbe.models.Employee;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.User;
 import com.example.cmsbe.models.enums.EmployeeType;
@@ -9,10 +10,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface IUserService {
-    List<User> getAllEmployees();
+    List<Employee> getAllEmployees();
     PaginationDTO<User> getAllEmployees(int page, int size);
     PaginationDTO<User> searchEmployees(String name, String email, int page, int size);
-    User createEmployee(User user);
+    public Employee createEmployee(Employee employee);
     User getEmployeeById(Integer employeeId);
     User updateEmployee(
             Integer id,

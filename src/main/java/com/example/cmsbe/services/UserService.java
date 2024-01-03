@@ -1,60 +1,66 @@
 package com.example.cmsbe.services;
 
+import com.example.cmsbe.models.Employee;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.User;
 import com.example.cmsbe.models.enums.EmployeeType;
 import com.example.cmsbe.models.enums.UserType;
+//import com.example.cmsbe.repositories.EmployeeRepository;
+import com.example.cmsbe.repositories.EmployeeRepository;
 import com.example.cmsbe.repositories.UserRepository;
 import com.example.cmsbe.services.interfaces.IUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserService implements IUserService {
-    private final UserRepository userRepository;
+//    private final UserRepository<User> userRepository;
+    private final EmployeeRepository employeeRepository;
     private final CloudinaryService cloudinaryService;
 
     @Override
-    public List<User> getAllEmployees() {
-        return userRepository.findByUserType(UserType.EMPLOYEE);
+    public List<Employee> getAllEmployees() {
+        return new ArrayList<>();
+//        return userRepository.findByUserType(UserType.EMPLOYEE);
     }
 
     @Override
     public PaginationDTO<User> getAllEmployees(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        var result = userRepository.findByUserType(UserType.EMPLOYEE, pageable);
-        return new PaginationDTO<>(result);
+//        Pageable pageable = PageRequest.of(page, size);
+//        var result = userRepository.findByUserType(UserType.EMPLOYEE, pageable);
+//        return new PaginationDTO<>(result);
+        return new PaginationDTO<>();
     }
 
     @Override
     public PaginationDTO<User> searchEmployees(String name, String email, int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        var result = userRepository.findByUserTypeAndNameContainingAndEmailContaining(UserType.EMPLOYEE, name, email, pageable);
-        return new PaginationDTO<>(result);
+//        Pageable pageable = PageRequest.of(page, size);
+//        var result = userRepository.findByUserTypeAndNameContainingAndEmailContaining(UserType.EMPLOYEE, name, email, pageable);
+//        return new PaginationDTO<>(result);
+        return new PaginationDTO<>();
     }
 
     @Override
-    public User createEmployee(User user) {
-        User savedUser = userRepository.save(user);
-        savedUser.generateEmployeeCode();
-        return userRepository.save(savedUser);
+    public Employee createEmployee(Employee employee) {
+        Employee savedEmployee = employeeRepository.save(employee);
+        savedEmployee.generateEmployeeCode();
+        return employeeRepository.save(savedEmployee);
     }
 
     @Override
     public User getEmployeeById(Integer employeeId) {
-        return userRepository.findById(employeeId).orElseThrow(() -> new EntityNotFoundException("Employee not found"));
+        return employeeRepository.findById(employeeId).orElseThrow(() -> new EntityNotFoundException("Employee not found"));
     }
 
     @Override
-    public User updateEmployee(
+    public Employee updateEmployee(
             Integer id,
             String email,
             String name,
@@ -66,7 +72,9 @@ public class UserService implements IUserService {
             LocalDate startedWorkingDate,
             EmployeeType employeeType
     ) {
-        var employee = userRepository.findById(id)
+        Employee employee = (Employee)
+                employeeRepository.findById(id)
+//                employeeRepository.findByUserType(UserType.EMPLOYEE, id)
                 .orElseThrow(() -> new EntityNotFoundException("Employee not found"));
         if (email != null) employee.setEmail(email);
         if (name != null) employee.setName(name);
@@ -80,11 +88,11 @@ public class UserService implements IUserService {
         if (salary != null) employee.setSalary(salary);
         if (startedWorkingDate != null) employee.setStartedWorkingDate(startedWorkingDate);
         if (employeeType != null) employee.setEmployeeType(employeeType);
-        return userRepository.save(employee);
+        return employeeRepository.save(employee);
     }
 
     @Override
     public void deleteEmployee(Integer employeeId) {
-        userRepository.deleteById(employeeId);
+        employeeRepository.deleteById(employeeId);
     }
 }

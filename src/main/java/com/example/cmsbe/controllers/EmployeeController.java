@@ -1,6 +1,7 @@
 package com.example.cmsbe.controllers;
 
 import com.example.cmsbe.config.Constants;
+import com.example.cmsbe.models.Employee;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.User;
 import com.example.cmsbe.models.enums.EmployeeType;
@@ -67,7 +68,7 @@ public class EmployeeController {
             @RequestParam EmployeeType employeeType
     ) {
         var imageUrl = cloudinaryService.uploadFile(image, "cms/users/employees/", name);
-        var user = new User(
+        var user = new Employee(
                 null,
                 email,
                 authenticationUtil.encodePassword(Constants.DEFAULT_EMPLOYEE_PASSWORD),
@@ -76,12 +77,10 @@ public class EmployeeController {
                 phone,
                 dateOfBirth,
                 contactAddress,
-                UserType.EMPLOYEE,
                 null, // employeeCode
                 salary,
                 startedWorkingDate,
-                employeeType,
-                false
+                employeeType
         );
         return ResponseEntity.ok(userService.createEmployee(user));
     }
@@ -128,7 +127,7 @@ public class EmployeeController {
         String headerValue = "attachment; filename=employees_" + currentDateTime + ".xlsx";
         response.setHeader(headerKey, headerValue);
 
-        List<User> employees = userService.getAllEmployees();
+        List<Employee> employees = userService.getAllEmployees();
         EmployeeExcelGenerator excelExporter = new EmployeeExcelGenerator(employees);
 
         excelExporter.export(response);

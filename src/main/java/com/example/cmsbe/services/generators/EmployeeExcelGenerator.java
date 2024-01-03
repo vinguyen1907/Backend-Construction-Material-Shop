@@ -1,23 +1,19 @@
 package com.example.cmsbe.services.generators;
 
-import com.example.cmsbe.models.User;
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.HttpServletResponse;
+import com.example.cmsbe.models.Employee;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.apache.poi.ss.util.CellUtil.createCell;
 
 public class EmployeeExcelGenerator extends ExcelGenerator {
-    protected List<User> listUsers;
+    protected List<Employee> employees;
 
-    public EmployeeExcelGenerator(List<User> listUsers) {
-        this.listUsers = listUsers;
+    public EmployeeExcelGenerator(List<Employee> employees) {
+        this.employees = employees;
     }
 
     @Override
@@ -65,27 +61,27 @@ public class EmployeeExcelGenerator extends ExcelGenerator {
         font.setFontHeight(14);
         style.setFont(font);
 
-        for (User user : listUsers) {
+        for (Employee employee : employees) {
             Row row = super.createRow(rowCount++);
             int columnCount = 0;
 
-            createCell(row, columnCount++, user.getEmployeeCode(), style);
+            createCell(row, columnCount++, employee.getEmployeeCode(), style);
             sheet.autoSizeColumn(0);
-            createCell(row, columnCount++, user.getName(), style);
+            createCell(row, columnCount++, employee.getName(), style);
             sheet.autoSizeColumn(1);
-            createCell(row, columnCount++, user.getEmail(), style);
+            createCell(row, columnCount++, employee.getEmail(), style);
             sheet.autoSizeColumn(2);
-            createCell(row, columnCount++, user.getPhone(), style);
+            createCell(row, columnCount++, employee.getPhone(), style);
             sheet.autoSizeColumn(3);
-            createCell(row, columnCount++, user.getDateOfBirth().toString(), style);
+            createCell(row, columnCount++, employee.getDateOfBirth().toString(), style);
             sheet.autoSizeColumn(4);
-            createCell(row, columnCount++, user.getContactAddress(), style);
+            createCell(row, columnCount++, employee.getContactAddress(), style);
             sheet.autoSizeColumn(5);
-            createCell(row, columnCount++, user.getSalary().toString(), style);
+            createCell(row, columnCount++, employee.getSalary().toString(), style);
             sheet.autoSizeColumn(6);
-            createCell(row, columnCount++, user.getStartedWorkingDate().toString(), style);
+            createCell(row, columnCount++, employee.getStartedWorkingDate().toString(), style);
             sheet.autoSizeColumn(7);
-            createCell(row, columnCount, user.getEmployeeType().toString(), style);
+            createCell(row, columnCount, employee.getEmployeeType().toString(), style);
             sheet.autoSizeColumn(8);
         }
     }

@@ -1,5 +1,7 @@
 package com.example.cmsbe.config;
 
+import com.example.cmsbe.models.User;
+import com.example.cmsbe.repositories.EmployeeRepository;
 import com.example.cmsbe.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
-    private final UserRepository repository;
+    private final EmployeeRepository repository;
 
     @Bean
     public UserDetailsService userDetailsService() {

@@ -1,10 +1,8 @@
 package com.example.cmsbe.services;
 
 import com.example.cmsbe.config.JwtService;
-import com.example.cmsbe.models.AuthenticationResponse;
-import com.example.cmsbe.models.AuthenticationRequest;
-import com.example.cmsbe.models.RegisterRequest;
-import com.example.cmsbe.models.User;
+import com.example.cmsbe.models.*;
+import com.example.cmsbe.repositories.EmployeeRepository;
 import com.example.cmsbe.repositories.UserRepository;
 import com.example.cmsbe.services.interfaces.IAuthenticationService;
 import com.example.cmsbe.utils.AuthenticationUtil;
@@ -20,13 +18,13 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService implements IAuthenticationService {
-    private final UserRepository userRepository;
+    private final EmployeeRepository userRepository;
     private final AuthenticationManager authManager;
     private final JwtService jwtService;
     private final AuthenticationUtil authenticationUtil;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        var user = User.builder()
+        var user = Employee.builder()
                 .email(request.getEmail())
                 .password(authenticationUtil.encodePassword(request.getPassword()))
                 .name(request.getName())
@@ -34,13 +32,13 @@ public class AuthenticationService implements IAuthenticationService {
                 .phone(request.getPhone())
                 .dateOfBirth(request.getDateOfBirth())
                 .contactAddress(request.getContactAddress())
-                .userType(request.getUserType())
+//                .userType(request.getUserType())
 //                .employeeCode(request.getEmployeeCode())
                 .salary(request.getSalary())
                 .startedWorkingDate(request.getStartedWorkingDate())
                 .employeeType(request.getEmployeeType())
                 .build();
-        User savedUser = userRepository.save(user);
+        Employee savedUser = userRepository.save(user);
         savedUser.generateEmployeeCode();
         userRepository.save(savedUser);
 
