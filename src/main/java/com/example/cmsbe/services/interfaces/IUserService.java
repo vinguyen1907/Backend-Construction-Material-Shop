@@ -1,6 +1,6 @@
 package com.example.cmsbe.services.interfaces;
 
-import com.example.cmsbe.dto.PaginationDTO;
+import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.User;
 import com.example.cmsbe.models.enums.EmployeeType;
 import org.springframework.web.multipart.MultipartFile;

@@ -1,4 +1,4 @@
-package com.example.cmsbe.dto;
+package com.example.cmsbe.models.dto;
 
 import lombok.Data;
 

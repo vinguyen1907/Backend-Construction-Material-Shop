@@ -1,8 +1,7 @@
 package com.example.cmsbe.services;
 
-import com.example.cmsbe.dto.PaginationDTO;
+import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Customer;
-import com.example.cmsbe.models.InventoryItem;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.repositories.CustomerRepository;
 import com.example.cmsbe.repositories.OrderRepository;

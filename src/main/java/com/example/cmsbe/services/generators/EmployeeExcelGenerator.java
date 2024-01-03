@@ -1,4 +1,4 @@
-package com.example.cmsbe.services.exporters;
+package com.example.cmsbe.services.generators;
 
 import com.example.cmsbe.models.User;
 import jakarta.servlet.ServletOutputStream;
@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.IOException;
@@ -14,17 +13,14 @@ import java.util.List;
 
 import static org.apache.poi.ss.util.CellUtil.createCell;
 
-public class EmployeeExcelExporter {
-    private XSSFWorkbook workbook;
-    private XSSFSheet sheet;
-    private List<User> listUsers;
-
-    public EmployeeExcelExporter(List<User> listUsers) {
+public class EmployeeExcelGenerator extends ExcelGenerator {
+    public EmployeeExcelGenerator(List<User> listUsers) {
         this.listUsers = listUsers;
         workbook = new XSSFWorkbook();
     }
 
-    private void writeHeaderLine() {
+    @Override
+    protected void writeHeaderLine() {
         sheet = workbook.createSheet("Users");
 
         Row row = sheet.createRow(0);
@@ -59,7 +55,8 @@ public class EmployeeExcelExporter {
 //        cell.setCellStyle(style);
 //    }
 
-    private void writeDataLines() {
+    @Override
+    protected void writeDataLines() {
         int rowCount = 1;
 
         CellStyle style = workbook.createCellStyle();
@@ -89,6 +86,7 @@ public class EmployeeExcelExporter {
         }
     }
 
+    @Override
     public void export(HttpServletResponse response) throws IOException {
         writeHeaderLine();
         writeDataLines();
