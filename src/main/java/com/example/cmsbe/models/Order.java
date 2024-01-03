@@ -7,8 +7,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,6 +42,19 @@ public class Order {
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
 //    private Boolean isDeleted = false;
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+        calculateTotal();
+    }
+
+    private void calculateTotal() {
+        double total = 0;
+        for (OrderItem item : orderItems) {
+            total += item.getQuantity() * item.getProduct().getUnitPrice();
+        }
+        this.total = total;
+    }
 
     @PrePersist
     public void prePersist() {

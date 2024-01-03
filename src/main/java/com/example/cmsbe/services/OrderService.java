@@ -1,9 +1,9 @@
 package com.example.cmsbe.services;
 
-import com.example.cmsbe.models.dto.OrderDTO;
-import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.OrderItem;
+import com.example.cmsbe.models.dto.OrderDTO;
+import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.repositories.OrderRepository;
 import com.example.cmsbe.services.interfaces.IOrderService;
@@ -60,22 +60,15 @@ public class OrderService implements IOrderService {
         }
         savedOrder.setOrderItems(newOrderItems);
         // update order with new order items
-        savedOrder.setTotal(calculateTotal(newOrderItems));
         orderRepository.save(savedOrder);
 
         // Flush changes to the database
         entityManager.flush();
         // Clear all entities to get the latest data from the database
         entityManager.clear();
-        return new OrderDTO(orderRepository.findById(orderId).orElse(null));
-    }
 
-    private double calculateTotal(List<OrderItem> orderItems) {
-        double total = 0;
-        for (OrderItem item : orderItems) {
-            total += item.getQuantity() * item.getProduct().getUnitPrice();
-        }
-        return total;
+        if (orderRepository.findById(orderId).isEmpty() ) return null;
+        return new OrderDTO(orderRepository.findById(orderId).get());
     }
 
     @Override
@@ -83,35 +76,6 @@ public class OrderService implements IOrderService {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order with ID" + orderId + " not found."));
         order.setStatus(newStatus);
         return orderRepository.save(order);
-
-//        Order order = optionalOrder.get();
-//        if (orderUpdateDTO.getCreatedTime() != null) {
-//            order.setCreatedTime(orderUpdateDTO.getCreatedTime());
-//        }
-//        if (orderUpdateDTO.getDepositedMoney() != null) {
-//            order.setDepositedMoney(orderUpdateDTO.getDepositedMoney());
-//        }
-//        if (orderUpdateDTO.getDiscount() != null) {
-//            order.setDiscount(orderUpdateDTO.getDiscount());
-//        }
-//        if (orderUpdateDTO.getStatus() != null) {
-//            order.setStatus(orderUpdateDTO.getStatus());
-//        }
-//        if (orderUpdateDTO.getCreatedUserId() != null) {
-//            Optional<User> optionalCreatedUser = userRepository.findById(orderUpdateDTO.getCreatedUserId());
-//            optionalCreatedUser.ifPresent(order::setCreatedUser);
-//        }
-//        if (orderUpdateDTO.getCustomerId() != null) {
-//            Optional<Customer> optionalCustomer = customerRepository.findById(orderUpdateDTO.getCustomerId());
-//            optionalCustomer.ifPresent(order::setCustomer);
-//        }
-//        if (orderUpdateDTO.getOrderItems() != null) {
-//            List<OrderItem> updatedOrderItems = new ArrayList<>();
-//            for (var orderItemDTO : orderUpdateDTO.getOrderItems()) {
-//                productRepository.findById(order)
-//            }
-//        }
-//        return orderRepository.save(order);
     }
 
     @Override
