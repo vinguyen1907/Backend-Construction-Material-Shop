@@ -1,5 +1,6 @@
 package com.example.cmsbe.services.interfaces;
 
+import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.enums.OrderStatus;
@@ -9,7 +10,7 @@ import java.time.LocalDate;
 public interface  IOrderService {
     PaginationDTO<Order> getAllOrders(int page, int size);
     Order getOrderById(Integer id);
-    Order createOrder(Order order);
+    OrderDTO createOrder(Order order);
     Order updateOrder(Integer orderId, OrderStatus newStatus);
     void deleteOrder(Integer orderId);
     // customer id, created time, status
