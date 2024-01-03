@@ -1,5 +1,6 @@
 package com.example.cmsbe.controllers;
 
+import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.enums.OrderStatus;
@@ -36,7 +37,7 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody Order order) {
         return ResponseEntity.ok(orderService.createOrder(order));
     }
 
@@ -48,9 +49,9 @@ public class OrderController {
         return ResponseEntity.ok(orderService.updateOrder(orderId, newStatus));
     }
 
-    @DeleteMapping("/{orderId}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable Integer orderId) {
-        orderService.deleteOrder(orderId);
-        return ResponseEntity.noContent().build();
-    }
+//    @DeleteMapping("/{orderId}")
+//    public ResponseEntity<Void> deleteOrder(@PathVariable Integer orderId) {
+//        orderService.deleteOrder(orderId);
+//        return ResponseEntity.noContent().build();
+//    }
 }
