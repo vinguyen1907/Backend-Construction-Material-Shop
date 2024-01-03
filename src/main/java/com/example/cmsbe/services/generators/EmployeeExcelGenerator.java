@@ -17,7 +17,6 @@ public class EmployeeExcelGenerator extends ExcelGenerator {
     protected List<User> listUsers;
 
     public EmployeeExcelGenerator(List<User> listUsers) {
-        super();
         this.listUsers = listUsers;
     }
 
@@ -89,17 +88,5 @@ public class EmployeeExcelGenerator extends ExcelGenerator {
             createCell(row, columnCount, user.getEmployeeType().toString(), style);
             sheet.autoSizeColumn(8);
         }
-    }
-
-    @Override
-    public void export(HttpServletResponse response) throws IOException {
-        writeHeaderLine();
-        writeDataLines();
-
-        ServletOutputStream outputStream = response.getOutputStream();
-        workbook.write(outputStream);
-        workbook.close();
-
-        outputStream.close();
     }
 }

@@ -3,12 +3,20 @@ package com.example.cmsbe.controllers;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Product;
 import com.example.cmsbe.services.CloudinaryService;
+import com.example.cmsbe.services.generators.ProductExcelGenerator;
 import com.example.cmsbe.services.interfaces.IProductService;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/products")
@@ -103,5 +111,20 @@ public class ProductController {
         } else {
             return ResponseEntity.ok(productService.searchProductByOriginAndPriceBetween(keyword, page, size, origin, minPrice, maxPrice));
         }
+    }
+
+    @GetMapping("/export/excel")
+    public void exportProductsToExcel(HttpServletResponse response) throws IOException {
+        response.setContentType("application/octet-stream");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
+        String currentDateTime = dateFormatter.format(new Date());
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=products_" + currentDateTime + ".xlsx";
+        response.setHeader(headerKey, headerValue);
+
+        List<Product> products = productService.getAllProducts();
+        ProductExcelGenerator excelExporter = new ProductExcelGenerator(products);
+
+        excelExporter.export(response);
     }
 }
