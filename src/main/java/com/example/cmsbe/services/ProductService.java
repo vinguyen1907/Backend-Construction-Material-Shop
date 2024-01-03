@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService implements IProductService {
@@ -27,6 +29,11 @@ public class ProductService implements IProductService {
 //                repository.findAll());
 //        return repository.findAll();
 //    }
+
+    @Override
+    public List<Product> getAllProducts() {
+        return repository.findAll();
+    }
 
     @Override
     public Product getProductById(Integer id) {

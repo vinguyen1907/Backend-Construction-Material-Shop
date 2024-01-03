@@ -4,8 +4,10 @@ import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Product;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 public interface IProductService {
-//    PaginationDTO<Product> getAllProducts();
+    List<Product> getAllProducts();
 
     Product getProductById(Integer id);
 
