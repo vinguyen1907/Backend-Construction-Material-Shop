@@ -1,11 +1,8 @@
 package com.example.cmsbe.services.interfaces;
 
-import com.example.cmsbe.dto.PaginationDTO;
+import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Product;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.List;
-import java.util.Optional;
 
 public interface IProductService {
 //    PaginationDTO<Product> getAllProducts();

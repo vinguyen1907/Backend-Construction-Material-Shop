@@ -1,11 +1,10 @@
 package com.example.cmsbe.services.interfaces;
 
-import com.example.cmsbe.dto.PaginationDTO;
+import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.enums.OrderStatus;
 
 import java.time.LocalDate;
-import java.util.List;
 
 public interface  IOrderService {
     PaginationDTO<Order> getAllOrders(int page, int size);

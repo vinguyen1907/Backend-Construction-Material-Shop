@@ -1,6 +1,6 @@
 package com.example.cmsbe.services;
 
-import com.example.cmsbe.dto.PaginationDTO;
+import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Product;
 import com.example.cmsbe.repositories.ProductRepository;
 import com.example.cmsbe.services.interfaces.IProductService;

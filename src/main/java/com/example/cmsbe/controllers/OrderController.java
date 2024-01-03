@@ -1,6 +1,6 @@
 package com.example.cmsbe.controllers;
 
-import com.example.cmsbe.dto.PaginationDTO;
+import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.services.OrderService;

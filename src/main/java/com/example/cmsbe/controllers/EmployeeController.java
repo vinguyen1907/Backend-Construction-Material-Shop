@@ -1,12 +1,12 @@
 package com.example.cmsbe.controllers;
 
 import com.example.cmsbe.config.Constants;
-import com.example.cmsbe.dto.PaginationDTO;
+import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.User;
 import com.example.cmsbe.models.enums.EmployeeType;
 import com.example.cmsbe.models.enums.UserType;
 import com.example.cmsbe.services.CloudinaryService;
-import com.example.cmsbe.services.exporters.EmployeeExcelExporter;
+import com.example.cmsbe.services.generators.EmployeeExcelGenerator;
 import com.example.cmsbe.services.interfaces.IUserService;
 import com.example.cmsbe.utils.AuthenticationUtil;
 import jakarta.servlet.http.HttpServletResponse;
@@ -122,7 +122,7 @@ public class EmployeeController {
     @GetMapping("/export/excel")
     public void exportEmployeesToExcel(HttpServletResponse response) throws IOException {
         response.setContentType("application/octet-stream");
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HHmmss");
         String currentDateTime = dateFormatter.format(new Date());
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=employees_" + currentDateTime + ".xlsx";
@@ -130,7 +130,7 @@ public class EmployeeController {
         response.setHeader(headerKey, headerValue);
 
         List<User> employees = userService.getAllEmployees(0, 1000).getResults();
-        EmployeeExcelExporter excelExporter = new EmployeeExcelExporter(employees);
+        EmployeeExcelGenerator excelExporter = new EmployeeExcelGenerator(employees);
 
         excelExporter.export(response);
     }
