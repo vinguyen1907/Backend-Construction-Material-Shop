@@ -1,5 +1,6 @@
 package com.example.cmsbe.models;
 
+import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.models.enums.OrderType;
 import jakarta.persistence.*;
@@ -54,6 +55,10 @@ public class Order {
             total += item.getQuantity() * item.getProduct().getUnitPrice();
         }
         this.total = total;
+    }
+
+    public OrderDTO toDTO() {
+        return new OrderDTO(this);
     }
 
     @PrePersist

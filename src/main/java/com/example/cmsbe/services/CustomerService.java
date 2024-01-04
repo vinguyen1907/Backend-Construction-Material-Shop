@@ -1,6 +1,7 @@
 package com.example.cmsbe.services;
 
 import com.example.cmsbe.models.dto.CustomerDTO;
+import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Customer;
 import com.example.cmsbe.models.Order;
@@ -8,6 +9,7 @@ import com.example.cmsbe.repositories.CustomerRepository;
 import com.example.cmsbe.repositories.OrderRepository;
 import com.example.cmsbe.services.interfaces.ICustomerService;
 import com.example.cmsbe.utils.ListUtil;
+import com.example.cmsbe.utils.OrderUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -49,8 +51,8 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public List<Order> getCustomerOrders(Integer customerId) {
-        return orderRepository.findByCustomerId(customerId);
+    public List<OrderDTO> getCustomerOrders(Integer customerId) {
+        return ListUtil.convertToOrderDTOList(orderRepository.findByCustomerId(customerId));
     }
 
     @Override

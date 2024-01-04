@@ -3,6 +3,7 @@ package com.example.cmsbe.services.interfaces;
 import com.example.cmsbe.models.Customer;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.dto.CustomerDTO;
+import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
 
 import java.util.List;
