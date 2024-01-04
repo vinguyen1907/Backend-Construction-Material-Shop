@@ -8,6 +8,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -25,6 +26,9 @@ public class OrderDTO {
     @Enumerated(EnumType.STRING)
     private OrderType orderType = OrderType.SALE;
     private Double total;
+    // Auditing variable
+    private LocalDateTime createdTime;
+    private LocalDateTime updatedTime;
 
     public OrderDTO(Order order) {
         this.id = order.getId();
@@ -38,5 +42,7 @@ public class OrderDTO {
                 .map(item -> item.toDTO()).toList();
         this.orderType = order.getOrderType();
         this.total = order.getTotal();
+        this.createdTime = order.getCreatedTime();
+        this.updatedTime = order.getUpdatedTime();
     }
 }

@@ -3,6 +3,7 @@ package com.example.cmsbe.controllers;
 import com.example.cmsbe.models.Customer;
 import com.example.cmsbe.models.User;
 import com.example.cmsbe.models.dto.CustomerDTO;
+import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.services.generators.CustomerExcelGenerator;
 import com.example.cmsbe.services.generators.EmployeeExcelGenerator;
@@ -50,7 +51,7 @@ public class CustomerController {
     }
 
     @GetMapping("/{customerId}/orders")
-    public ResponseEntity<?> getCustomerOrders(@PathVariable Integer customerId) throws EntityNotFoundException {
+    public ResponseEntity<List<OrderDTO>> getCustomerOrders(@PathVariable Integer customerId) throws EntityNotFoundException {
         return ResponseEntity.ok(customerService.getCustomerOrders(customerId));
     }
 
