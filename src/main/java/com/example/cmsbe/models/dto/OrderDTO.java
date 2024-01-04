@@ -35,10 +35,7 @@ public class OrderDTO {
         this.status = order.getStatus();
         this.orderItems = order.getOrderItems()
                 .stream()
-                .map(item -> new OrderItemDTO(
-                        item.getProduct().getId(),
-                        item.getQuantity()
-                )).toList();
+                .map(item -> item.toDTO()).toList();
         this.orderType = order.getOrderType();
         this.total = order.getTotal();
     }

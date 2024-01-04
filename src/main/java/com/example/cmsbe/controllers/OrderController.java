@@ -19,7 +19,7 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<PaginationDTO<Order>> getAllOrders(
+    public ResponseEntity<PaginationDTO<OrderDTO>> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) Integer id,
@@ -32,7 +32,7 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<?> getOrderById(@PathVariable Integer orderId) throws EntityNotFoundException {
+    public ResponseEntity<Order> getOrderById(@PathVariable Integer orderId) throws EntityNotFoundException {
         return ResponseEntity.ok(orderService.getOrderById(orderId));
     }
 
@@ -42,7 +42,7 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<?> updateOrder(
+    public ResponseEntity<Order> updateOrder(
             @PathVariable Integer orderId,
             @RequestParam(name = "status") OrderStatus newStatus
     ) throws EntityNotFoundException {

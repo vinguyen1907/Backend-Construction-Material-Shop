@@ -1,5 +1,6 @@
 package com.example.cmsbe.models;
 
+import com.example.cmsbe.models.dto.OrderItemDTO;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
@@ -25,4 +26,11 @@ public class OrderItem {
     private Order order;
     @Positive(message = "Quantity must be positive.")
     private int quantity;
+
+    public OrderItemDTO toDTO() {
+        return new OrderItemDTO(
+                product.getId(),
+                quantity
+        );
+    }
 }
