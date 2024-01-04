@@ -1,4 +1,4 @@
-package com.example.cmsbe.config;
+package com.example.cmsbe.services;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

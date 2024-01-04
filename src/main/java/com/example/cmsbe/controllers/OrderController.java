@@ -5,6 +5,7 @@ import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.services.OrderService;
+import com.example.cmsbe.services.interfaces.IOrderService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 @RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
 public class OrderController {
-    private final OrderService orderService;
+    private final IOrderService orderService;
 
     @GetMapping
     public ResponseEntity<PaginationDTO<OrderDTO>> getAllOrders(

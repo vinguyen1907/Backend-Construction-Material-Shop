@@ -1,5 +1,6 @@
-package com.example.cmsbe.config.error_handlers;
+package com.example.cmsbe.error_handlers.errors;
 
+import com.example.cmsbe.error_handlers.LowerCaseClassNameResolver;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonTypeIdResolver;
@@ -15,12 +16,12 @@ import java.util.List;
 @Data
 @JsonTypeInfo(include = JsonTypeInfo.As.WRAPPER_OBJECT, use = JsonTypeInfo.Id.CUSTOM, property = "error", visible = true)
 @JsonTypeIdResolver(LowerCaseClassNameResolver.class)
-public
-class ApiError {
+public class ApiError {
 
     private HttpStatus status;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy hh:mm:ss")
     private LocalDateTime timestamp;
+    private String errorCode;
     private String message;
     private String debugMessage;
     private List<ApiSubError> subErrors;
