@@ -38,6 +38,9 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderType orderType = OrderType.SALE;
     private Double total;
+    @OneToOne
+    @JoinColumn(name = "debt_id", referencedColumnName = "id")
+    private Debt debt;
 
     // Auditing variable
     private LocalDateTime createdTime;

@@ -7,6 +7,7 @@ import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.repositories.OrderRepository;
 import com.example.cmsbe.services.interfaces.IOrderService;
+import com.example.cmsbe.utils.ListUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
@@ -94,7 +95,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public PaginationDTO<Order> searchWithFilter(int page, int size, Integer id, String customerName, OrderStatus status, LocalDate startDate, LocalDate endDate) {
+    public PaginationDTO<OrderDTO> searchWithFilter(int page, int size, Integer id, String customerName, OrderStatus status, LocalDate startDate, LocalDate endDate) {
         Specification<Order> spec = Specification.where(null);
         if (id != null) {
             spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), id));
@@ -112,6 +113,15 @@ public class OrderService implements IOrderService {
             spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.lessThan(root.get("createdTime"), endDate));
         }
         Pageable pageable = PageRequest.of(page, size);
-        return new PaginationDTO<>(orderRepository.findAll(spec, pageable));
+        var result = orderRepository.findAll(spec, pageable);
+        var orders = result.getContent();
+        var orderDTOs = ListUtil.convertToOrderDTOList(orders);
+        return new PaginationDTO<>(
+                result.getTotalPages(),
+                result.getTotalElements(),
+                result.getNumber(),
+                result.getSize(),
+                orderDTOs
+        );
     }
 }
