@@ -2,13 +2,10 @@ package com.example.cmsbe.services.generators;
 
 import com.example.cmsbe.models.Customer;
 import com.example.cmsbe.utils.OrderUtil;
-import jakarta.servlet.ServletOutputStream;
-import jakarta.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.apache.poi.ss.util.CellUtil.createCell;
@@ -17,7 +14,6 @@ public class CustomerExcelGenerator extends ExcelGenerator {
     private final List<Customer> customers;
 
     public CustomerExcelGenerator(List<Customer> customers) {
-        super();
         this.customers = customers;
     }
 
@@ -70,17 +66,5 @@ public class CustomerExcelGenerator extends ExcelGenerator {
             createCell(row, columnCount, String.valueOf(OrderUtil.calculateTotal(customer.getOrders())), style);
             sheet.autoSizeColumn(6);
         }
-    }
-
-    @Override
-    public void export(HttpServletResponse response) throws IOException {
-        writeHeaderLine();
-        writeDataLines();
-
-        ServletOutputStream outputStream = response.getOutputStream();
-        workbook.write(outputStream);
-        workbook.close();
-
-        outputStream.close();
     }
 }

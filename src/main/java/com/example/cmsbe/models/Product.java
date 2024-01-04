@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Data
 @Builder
@@ -28,5 +30,19 @@ public class Product {
     private String calculationUnit;
     private Integer quantitySold = 0;
     private Integer quantityRemaining = 0;
+    // Internal variables
+    private LocalDateTime createdAt = LocalDateTime.now();
+    private LocalDateTime updatedAt = LocalDateTime.now();
     private boolean isDeleted = false;
+
+    @PrePersist
+    private void onCreate() {
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void onUpdate() {
+        this.updatedAt = LocalDateTime.now();
+    }
 }
