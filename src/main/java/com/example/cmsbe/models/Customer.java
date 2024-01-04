@@ -1,5 +1,6 @@
 package com.example.cmsbe.models;
 
+import com.example.cmsbe.models.dto.CustomerDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
@@ -38,4 +39,8 @@ public class Customer {
     )
     private List<Order> orders;
     private boolean isDeleted = false;
+
+    public CustomerDTO toDTO() {
+        return new CustomerDTO(this);
+    }
 }

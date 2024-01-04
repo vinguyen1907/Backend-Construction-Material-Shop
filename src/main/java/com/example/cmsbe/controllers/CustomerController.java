@@ -2,9 +2,12 @@ package com.example.cmsbe.controllers;
 
 import com.example.cmsbe.models.Customer;
 import com.example.cmsbe.models.User;
+import com.example.cmsbe.models.dto.CustomerDTO;
+import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.services.generators.CustomerExcelGenerator;
 import com.example.cmsbe.services.generators.EmployeeExcelGenerator;
 import com.example.cmsbe.services.interfaces.ICustomerService;
+import com.example.cmsbe.utils.ListUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +29,7 @@ public class CustomerController {
     private final ICustomerService customerService;
 
     @GetMapping
-    public ResponseEntity<?> getAllCustomer(
+    public ResponseEntity<PaginationDTO<CustomerDTO>> getAllCustomer(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String customerName,
@@ -37,13 +40,13 @@ public class CustomerController {
             } else if (phone != null) {
                 return ResponseEntity.ok(customerService.searchCustomerByPhone(page, size, phone));
             } else {
-                return ResponseEntity.ok(customerService.getAllCustomer(page, size));
+                return ResponseEntity.ok(customerService.getAllCustomerDTO(page, size));
             }
     }
 
     @GetMapping("/{customerId}")
     public ResponseEntity<?> getCustomerById(@PathVariable Integer customerId) throws EntityNotFoundException {
-        return ResponseEntity.ok(customerService.getCustomerById(customerId));
+        return ResponseEntity.ok(new CustomerDTO(customerService.getCustomerById(customerId)));
     }
 
     @GetMapping("/{customerId}/orders")
