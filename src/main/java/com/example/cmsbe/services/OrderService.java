@@ -1,5 +1,6 @@
 package com.example.cmsbe.services;
 
+import com.example.cmsbe.error_handlers.custom_exceptions.NotEnoughQuantityException;
 import com.example.cmsbe.models.Debt;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.OrderItem;
@@ -7,6 +8,7 @@ import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.repositories.DebtRepository;
+import com.example.cmsbe.repositories.InventoryItemRepository;
 import com.example.cmsbe.repositories.OrderRepository;
 import com.example.cmsbe.services.interfaces.IOrderService;
 import com.example.cmsbe.utils.ListUtil;
@@ -30,6 +32,7 @@ import java.util.List;
 public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final DebtRepository debtRepository;
+    private final InventoryItemRepository inventoryItemRepository;
     private final ProductService productService;
 
     @PersistenceContext
@@ -58,6 +61,8 @@ public class OrderService implements IOrderService {
         updateOrderItems(order);
         // Update debt
         updateDebt(order);
+        // Update inventory
+        decreaseInventory(order);
         // update order with new order items
         orderRepository.save(order);
 
@@ -70,12 +75,29 @@ public class OrderService implements IOrderService {
         return new OrderDTO(orderRepository.findById(orderId).get());
     }
 
+    private void decreaseInventory(Order order) {
+        var orderItems = order.getOrderItems();
+        for (OrderItem orderItem : orderItems) {
+            var inventoryItem = inventoryItemRepository.findById(orderItem.getInventoryItem().getId()).orElseThrow();
+            if (inventoryItem.getQuantity() < orderItem.getQuantity()) {
+                throw new NotEnoughQuantityException("Not enough quantity for product " + orderItem.getInventoryItem().getProduct().getName());
+            }
+            inventoryItem.setQuantity(inventoryItem.getQuantity() - orderItem.getQuantity());
+            inventoryItemRepository.save(inventoryItem);
+        }
+    }
+
     private void updateOrderItems(Order order) {
         List<OrderItem> newOrderItems = new ArrayList<>();
         for (var i = 0; i < order.getOrderItems().size(); i++) {
             OrderItem newItem = order.getOrderItems().get(i);
             newItem.setOrder(order);
-            newItem.setProduct(productService.getProductById(newItem.getProduct().getId()));
+            var inventoryItemId = newItem.getInventoryItem().getId();
+            newItem.setInventoryItem(
+                    inventoryItemRepository
+                            .findById(inventoryItemId)
+                            .orElseThrow(() -> new EntityNotFoundException("Inventory item with ID " + inventoryItemId + " not found."))
+            );
             newOrderItems.add(newItem);
         }
         order.setOrderItemsAndCalculateTotal(newOrderItems);
@@ -89,12 +111,24 @@ public class OrderService implements IOrderService {
         debtRepository.save(debt);
     }
 
-
     @Override
     public Order updateOrder(Integer orderId, OrderStatus newStatus) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order with ID" + orderId + " not found."));
         order.setStatus(newStatus);
+        if (newStatus == OrderStatus.CANCELLED) {
+            revertInventory(order);
+        }
+
         return orderRepository.save(order);
+    }
+
+    private void revertInventory(Order order) {
+        List<OrderItem> orderItems = order.getOrderItems();
+        for (OrderItem orderItem : orderItems) {
+            var inventoryItem = orderItem.getInventoryItem();
+            inventoryItem.setQuantity(inventoryItem.getQuantity() + orderItem.getQuantity());
+            inventoryItemRepository.save(inventoryItem);
+        }
     }
 
     @Override

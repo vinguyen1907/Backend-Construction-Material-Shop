@@ -55,7 +55,7 @@ public class Order {
     private void calculateTotal() {
         double total = 0;
         for (OrderItem item : orderItems) {
-            total += item.getQuantity() * item.getProduct().getUnitPrice();
+            total += item.getQuantity() * item.getInventoryItem().getProduct().getUnitPrice();
         }
         this.total = total;
     }

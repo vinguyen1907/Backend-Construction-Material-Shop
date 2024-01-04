@@ -1,4 +1,4 @@
-package com.example.cmsbe.config.error_handlers;
+package com.example.cmsbe.error_handlers.errors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

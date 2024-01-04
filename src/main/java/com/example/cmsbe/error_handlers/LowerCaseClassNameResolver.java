@@ -1,4 +1,4 @@
-package com.example.cmsbe.config.error_handlers;
+package com.example.cmsbe.error_handlers;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.jsontype.impl.TypeIdResolverBase;

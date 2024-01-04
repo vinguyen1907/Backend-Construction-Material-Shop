@@ -1,5 +1,6 @@
-package com.example.cmsbe.config.error_handlers;
+package com.example.cmsbe.error_handlers;
 
+import com.example.cmsbe.error_handlers.errors.ApiError;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;

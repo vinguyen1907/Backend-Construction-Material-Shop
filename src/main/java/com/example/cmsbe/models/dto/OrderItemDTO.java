@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class OrderItemDTO {
+    private Integer inventoryItemId;
     private Integer productId;
     private Integer quantity;
 }

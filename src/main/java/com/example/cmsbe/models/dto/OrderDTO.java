@@ -1,15 +1,20 @@
 package com.example.cmsbe.models.dto;
 
+import com.example.cmsbe.config.JacksonLocalDateTimeSerializer;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.OrderItem;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.models.enums.OrderType;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Data
@@ -29,7 +34,9 @@ public class OrderDTO {
     private Double total;
     private DebtDTO debt;
     // Auditing variable
+    @JsonSerialize(using = JacksonLocalDateTimeSerializer.class)
     private LocalDateTime createdTime;
+    @JsonSerialize(using = JacksonLocalDateTimeSerializer.class)
     private LocalDateTime updatedTime;
 
     public OrderDTO(Order order) {

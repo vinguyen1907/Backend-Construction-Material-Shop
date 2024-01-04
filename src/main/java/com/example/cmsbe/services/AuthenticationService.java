@@ -1,6 +1,5 @@
 package com.example.cmsbe.services;
 
-import com.example.cmsbe.config.JwtService;
 import com.example.cmsbe.models.AuthenticationResponse;
 import com.example.cmsbe.models.AuthenticationRequest;
 import com.example.cmsbe.models.RegisterRequest;
@@ -13,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 

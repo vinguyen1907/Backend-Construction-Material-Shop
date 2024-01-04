@@ -19,7 +19,8 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @ManyToOne()
-    private Product product;
+    private InventoryItem inventoryItem;
+//    private Product product;
     @ManyToOne
     @JoinColumn(name = "order_id")
     @JsonIgnore
@@ -29,7 +30,8 @@ public class OrderItem {
 
     public OrderItemDTO toDTO() {
         return new OrderItemDTO(
-                product.getId(),
+                inventoryItem.getId(),
+                inventoryItem.getProduct().getId(),
                 quantity
         );
     }
