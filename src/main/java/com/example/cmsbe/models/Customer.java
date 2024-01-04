@@ -38,6 +38,8 @@ public class Customer {
             fetch = FetchType.LAZY
     )
     private List<Order> orders;
+    @OneToMany
+    private List<Debt> debts;
     private boolean isDeleted = false;
 
     public CustomerDTO toDTO() {
