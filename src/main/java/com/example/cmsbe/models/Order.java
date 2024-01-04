@@ -47,7 +47,7 @@ public class Order {
     private LocalDateTime updatedTime;
 //    private Boolean isDeleted = false;
 
-    public void setOrderItems(List<OrderItem> orderItems) {
+    public void setOrderItemsAndCalculateTotal(List<OrderItem> orderItems) {
         this.orderItems = orderItems;
         calculateTotal();
     }

@@ -1,6 +1,7 @@
 package com.example.cmsbe.models.dto;
 
 import com.example.cmsbe.models.Order;
+import com.example.cmsbe.models.OrderItem;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.models.enums.OrderType;
 import jakarta.persistence.EnumType;
@@ -24,8 +25,9 @@ public class OrderDTO {
     private OrderStatus status;
     private List<OrderItemDTO> orderItems;
     @Enumerated(EnumType.STRING)
-    private OrderType orderType = OrderType.SALE;
+    private OrderType orderType;
     private Double total;
+    private DebtDTO debt;
     // Auditing variable
     private LocalDateTime createdTime;
     private LocalDateTime updatedTime;
@@ -39,9 +41,10 @@ public class OrderDTO {
         this.status = order.getStatus();
         this.orderItems = order.getOrderItems()
                 .stream()
-                .map(item -> item.toDTO()).toList();
+                .map(OrderItem::toDTO).toList();
         this.orderType = order.getOrderType();
         this.total = order.getTotal();
+        this.debt = order.getDebt() != null ? order.getDebt().toDTO() : null;
         this.createdTime = order.getCreatedTime();
         this.updatedTime = order.getUpdatedTime();
     }

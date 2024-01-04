@@ -32,12 +32,13 @@ public class OrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<Order> getOrderById(@PathVariable Integer orderId) throws EntityNotFoundException {
+    public ResponseEntity<OrderDTO> getOrderById(@PathVariable Integer orderId) throws EntityNotFoundException {
         return ResponseEntity.ok(orderService.getOrderById(orderId));
     }
 
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody Order order) {
+        System.out.println("Order: " + order);
         return ResponseEntity.ok(orderService.createOrder(order));
     }
 

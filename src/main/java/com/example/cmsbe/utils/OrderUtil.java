@@ -10,7 +10,7 @@ public class OrderUtil {
         double total = 0;
         for (Order order : orders) {
             for (OrderItem item : order.getOrderItems()) {
-                total += (int) (item.getQuantity() * item.getProduct().getUnitPrice());
+                total += item.getQuantity() * item.getProduct().getUnitPrice();
             }
         }
         return total;
