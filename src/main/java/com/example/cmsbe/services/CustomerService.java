@@ -1,11 +1,13 @@
 package com.example.cmsbe.services;
 
+import com.example.cmsbe.models.dto.CustomerDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Customer;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.repositories.CustomerRepository;
 import com.example.cmsbe.repositories.OrderRepository;
 import com.example.cmsbe.services.interfaces.ICustomerService;
+import com.example.cmsbe.utils.ListUtil;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -28,14 +30,21 @@ public class CustomerService implements ICustomerService {
     @Override
     public PaginationDTO<Customer> getAllCustomer(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        long total = customerRepository.count();
-        List<Customer> items = customerRepository.findAll(pageable).getContent();
+        return new PaginationDTO<>(customerRepository.findAll(pageable));
+    }
+
+    @Override
+    public PaginationDTO<CustomerDTO> getAllCustomerDTO(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        var result = customerRepository.findAll(pageable);
+        var customers = result.getContent();
+        var customerDTOs = ListUtil.convertToDTOList(customers);
         return new PaginationDTO<>(
-                (long) Math.ceil((double) total / size),
-                total,
-                page,
-                size,
-                items
+                result.getTotalPages(),
+                result.getTotalElements(),
+                result.getNumber(),
+                result.getSize(),
+                customerDTOs
         );
     }
 
@@ -45,30 +54,32 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public PaginationDTO<Customer> searchCustomerByName(int page, int size, String name) {
+    public PaginationDTO<CustomerDTO> searchCustomerByName(int page, int size, String name) {
         Pageable pageable = PageRequest.of(page, size);
-        long total = customerRepository.countByNameContaining(name);
-        List<Customer> items = customerRepository.findByNameContaining(name, pageable);
+        var result = customerRepository.findByNameContaining(name, pageable);
+        var customers = result.getContent();
+        var customerDTOs = ListUtil.convertToDTOList(customers);
         return new PaginationDTO<>(
-                (long) Math.ceil((double) total / size),
-                total,
-                page,
-                size,
-                items
+                result.getTotalPages(),
+                result.getTotalElements(),
+                result.getNumber(),
+                result.getSize(),
+                customerDTOs
         );
     }
 
     @Override
-    public PaginationDTO<Customer> searchCustomerByPhone(int page, int size, String phone) {
+    public PaginationDTO<CustomerDTO> searchCustomerByPhone(int page, int size, String phone) {
         Pageable pageable = PageRequest.of(page, size);
-        long total = customerRepository.countByPhoneContaining(phone);
-        List<Customer> items = customerRepository.findByPhoneContaining(phone, pageable);
+        var result = customerRepository.findByPhoneContaining(phone, pageable);
+        var customers = result.getContent();
+        var customerDTOs = ListUtil.convertToDTOList(customers);
         return new PaginationDTO<>(
-                (long) Math.ceil((double) total / size),
-                total,
-                page,
-                size,
-                items
+                result.getTotalPages(),
+                result.getTotalElements(),
+                result.getNumber(),
+                result.getSize(),
+                customerDTOs
         );
     }
 
