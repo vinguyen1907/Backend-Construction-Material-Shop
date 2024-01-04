@@ -1,5 +1,6 @@
 package com.example.cmsbe.models;
 
+import com.example.cmsbe.models.dto.DebtDTO;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -18,9 +19,13 @@ public class Debt {
     private Integer id;
     @Positive
     private Double amount;
-    private Boolean alreadyPaid;
+    private Boolean alreadyPaid = false;
     @OneToOne
     private Order order;
     @ManyToOne
     private Customer customer;
+
+    public DebtDTO toDTO() {
+        return new DebtDTO(this);
+    }
 }

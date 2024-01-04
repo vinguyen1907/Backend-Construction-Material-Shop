@@ -1,10 +1,12 @@
 package com.example.cmsbe.services;
 
+import com.example.cmsbe.models.Debt;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.OrderItem;
 import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
+import com.example.cmsbe.repositories.DebtRepository;
 import com.example.cmsbe.repositories.OrderRepository;
 import com.example.cmsbe.services.interfaces.IOrderService;
 import com.example.cmsbe.utils.ListUtil;
@@ -27,6 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
+    private final DebtRepository debtRepository;
     private final ProductService productService;
 
     @PersistenceContext
@@ -40,37 +43,52 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Order getOrderById(Integer id) {
+    public OrderDTO getOrderById(Integer id) {
         return orderRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Order with ID " + id + " not found."));
+                .orElseThrow(() -> new EntityNotFoundException("Order with ID " + id + " not found.")).toDTO();
     }
 
     @Override
     @Transactional
     public OrderDTO createOrder(Order order) {
         // Save order first to generate id
-        var savedOrder = orderRepository.save(order);
-        Integer orderId = savedOrder.getId();
+        order = orderRepository.save(order);
+        Integer orderId = order.getId();
         // Update order id to all order items
-        List<OrderItem> newOrderItems = new ArrayList<>();
-        for (var i = 0; i < savedOrder.getOrderItems().size(); i++) {
-            OrderItem newItem = savedOrder.getOrderItems().get(i);
-            newItem.setOrder(savedOrder);
-            newItem.setProduct(productService.getProductById(newItem.getProduct().getId()));
-            newOrderItems.add(newItem);
-        }
-        savedOrder.setOrderItems(newOrderItems);
+        updateOrderItems(order);
+        // Update debt
+        updateDebt(order);
         // update order with new order items
-        orderRepository.save(savedOrder);
+        orderRepository.save(order);
 
         // Flush changes to the database
         entityManager.flush();
         // Clear all entities to get the latest data from the database
         entityManager.clear();
 
-        if (orderRepository.findById(orderId).isEmpty() ) return null;
+        if (orderRepository.findById(orderId).isEmpty()) return null;
         return new OrderDTO(orderRepository.findById(orderId).get());
     }
+
+    private void updateOrderItems(Order order) {
+        List<OrderItem> newOrderItems = new ArrayList<>();
+        for (var i = 0; i < order.getOrderItems().size(); i++) {
+            OrderItem newItem = order.getOrderItems().get(i);
+            newItem.setOrder(order);
+            newItem.setProduct(productService.getProductById(newItem.getProduct().getId()));
+            newOrderItems.add(newItem);
+        }
+        order.setOrderItemsAndCalculateTotal(newOrderItems);
+    }
+
+    private void updateDebt(Order order) {
+        Debt debt = order.getDebt();
+        if (debt == null) return;
+        debt.setOrder(order);
+        order.setDebt(debt);
+        debtRepository.save(debt);
+    }
+
 
     @Override
     public Order updateOrder(Integer orderId, OrderStatus newStatus) {

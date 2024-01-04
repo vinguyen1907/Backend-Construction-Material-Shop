@@ -1,6 +1,7 @@
 package com.example.cmsbe.models.dto;
 
 import com.example.cmsbe.models.Customer;
+import com.example.cmsbe.models.Debt;
 import com.example.cmsbe.models.Order;
 import lombok.Data;
 
@@ -17,6 +18,7 @@ public class CustomerDTO {
     private String contactAddress;
     private String taxCode;
     private List<Integer> orderIds = new ArrayList<>();
+    private List<DebtDTO> debts;
     private boolean isDeleted;
 
     public CustomerDTO(Customer customer) {
