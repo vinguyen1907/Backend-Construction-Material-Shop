@@ -23,6 +23,7 @@ public class Debt {
     @OneToOne
     private Order order;
     @ManyToOne
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     public DebtDTO toDTO() {
