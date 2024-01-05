@@ -46,8 +46,11 @@ public class CustomerController {
     }
 
     @GetMapping("/{customerId}")
-    public ResponseEntity<?> getCustomerById(@PathVariable Integer customerId) throws EntityNotFoundException {
-        return ResponseEntity.ok(new CustomerDTO(customerService.getCustomerById(customerId)));
+    public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable Integer customerId) throws EntityNotFoundException {
+        var result = customerService.getCustomerById(customerId);
+
+//        System.out.println(result.getDebts().size());
+        return ResponseEntity.ok(new CustomerDTO(result));
     }
 
     @GetMapping("/{customerId}/orders")

@@ -1,6 +1,7 @@
 package com.example.cmsbe.models;
 
 import com.example.cmsbe.models.dto.CustomerDTO;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Past;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,7 @@ public class Customer {
     private String name;
     private String phone;
     @Past(message = "Birthday can not be after today.")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
     @Column(length = 200)
     private String contactAddress;
@@ -38,7 +40,7 @@ public class Customer {
             fetch = FetchType.LAZY
     )
     private List<Order> orders;
-    @OneToMany
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Debt> debts;
     private boolean isDeleted = false;
 
