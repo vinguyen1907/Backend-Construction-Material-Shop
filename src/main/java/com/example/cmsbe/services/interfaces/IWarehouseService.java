@@ -10,4 +10,6 @@ public interface IWarehouseService {
     Warehouse createWarehouse(Warehouse warehouse);
     Warehouse updateWarehouse(Integer id, Warehouse warehouse);
     void deleteWarehouse(Integer id);
+
+    double getCapacity();
 }

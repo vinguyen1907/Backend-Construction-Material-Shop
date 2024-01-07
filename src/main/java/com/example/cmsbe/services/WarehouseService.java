@@ -41,4 +41,9 @@ public class WarehouseService implements IWarehouseService {
     public void deleteWarehouse(Integer id) {
          warehouseRepository.deleteById(id);
     }
+
+    @Override
+    public double getCapacity() {
+        return warehouseRepository.getCapacity();
+    }
 }
