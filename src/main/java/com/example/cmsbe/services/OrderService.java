@@ -17,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -175,5 +176,12 @@ public class OrderService implements IOrderService {
                 result.getSize(),
                 orderDTOs
         );
+    }
+
+    @Override
+    public List<OrderDTO> getNewestOrders(int size) {
+        return orderRepository.findByOrderByCreatedTimeDesc(Limit.of(size))
+                .stream().map(Order::toDTO)
+                .toList();
     }
 }

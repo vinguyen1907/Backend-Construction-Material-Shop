@@ -29,6 +29,9 @@ public class OrderItem {
     private int quantity;
 
     public OrderItemDTO toDTO() {
+        if (inventoryItem == null) {
+            return null;
+        }
         return new OrderItemDTO(
                 inventoryItem.getId(),
                 inventoryItem.getProduct().getId(),

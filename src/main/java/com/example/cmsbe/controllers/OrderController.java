@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -36,6 +37,12 @@ public class OrderController {
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable Integer orderId) throws EntityNotFoundException {
         return ResponseEntity.ok(orderService.getOrderById(orderId));
     }
+
+    @GetMapping("newest/{size}")
+    public ResponseEntity<List<OrderDTO>> getNewestOrders( @PathVariable Integer size) {
+        return ResponseEntity.ok(orderService.getNewestOrders(size));
+    }
+
 
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody Order order) {
