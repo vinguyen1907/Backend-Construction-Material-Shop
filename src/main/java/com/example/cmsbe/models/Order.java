@@ -4,10 +4,7 @@ import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.models.enums.OrderType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "order_table")
+@ToString(exclude = {"orderItems", "debt"})
 //@SQLDelete(sql = "UPDATE order_table SET is_deleted = true WHERE id=?")
 //@SQLRestriction("is_deleted = false")
 public class Order {
