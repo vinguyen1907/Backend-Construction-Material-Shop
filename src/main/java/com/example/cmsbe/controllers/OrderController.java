@@ -43,7 +43,6 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getNewestOrders(size));
     }
 
-
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody Order order) {
         System.out.println("Order: " + order);
