@@ -1,7 +1,6 @@
 package com.example.cmsbe.models.dto;
 
 import com.example.cmsbe.models.Customer;
-import com.example.cmsbe.models.Debt;
 import com.example.cmsbe.models.Order;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
@@ -32,10 +31,15 @@ public class CustomerDTO {
         this.taxCode = customer.getTaxCode();
         this.isDeleted = customer.isDeleted();
         List<Order> orders = customer.getOrders();
-        for (Order order : orders) {
-            assert false;
-            this.orderIds.add(order.getId());
+        if (orders == null) {
+            this.orderIds = null;
+        } else {
+            orders.forEach(order -> this.orderIds.add(order.getId()));
         }
-        customer.getDebts().forEach(debt -> this.debts.add(debt.toDTO()));
+        if (orders == null) {
+            this.orderIds = null;
+        } else {
+            customer.getDebts().forEach(debt -> this.debts.add(debt.toDTO()));
+        }
     }
 }

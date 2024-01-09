@@ -23,4 +23,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     @Query("SELECT SUM(p.quantitySold) FROM Product p")
     Double getTotalSoldCapacity();
+
+    @Query("SELECT p FROM Product p ORDER BY (p.quantityRemaining / (p.quantitySold + p.quantityRemaining)) DESC LIMIT 10")
+    List<Product> getOnLowestProductStock();
 }
