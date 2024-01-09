@@ -2,14 +2,17 @@ package com.example.cmsbe.services;
 
 import com.example.cmsbe.error_handlers.custom_exceptions.NotEnoughQuantityException;
 import com.example.cmsbe.models.Debt;
+import com.example.cmsbe.models.InventoryItem;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.OrderItem;
 import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
+import com.example.cmsbe.models.enums.OrderType;
 import com.example.cmsbe.repositories.DebtRepository;
 import com.example.cmsbe.repositories.InventoryItemRepository;
 import com.example.cmsbe.repositories.OrderRepository;
+import com.example.cmsbe.repositories.ProductRepository;
 import com.example.cmsbe.services.interfaces.IOrderService;
 import com.example.cmsbe.utils.ListUtil;
 import jakarta.persistence.EntityManager;
@@ -34,6 +37,7 @@ public class OrderService implements IOrderService {
     private final OrderRepository orderRepository;
     private final DebtRepository debtRepository;
     private final InventoryItemRepository inventoryItemRepository;
+    private final ProductRepository productRepository;
     private final ProductService productService;
 
     @PersistenceContext
@@ -58,11 +62,9 @@ public class OrderService implements IOrderService {
         // Save order first to generate id
         order = orderRepository.save(order);
         Integer orderId = order.getId();
-        // Update order id to all order items
+
         updateOrderItems(order);
-        // Update debt
         updateDebt(order);
-        // Update inventory
         decreaseInventory(order);
         // update order with new order items
         orderRepository.save(order);
@@ -79,12 +81,32 @@ public class OrderService implements IOrderService {
     private void decreaseInventory(Order order) {
         var orderItems = order.getOrderItems();
         for (OrderItem orderItem : orderItems) {
-            var inventoryItem = inventoryItemRepository.findById(orderItem.getInventoryItem().getId()).orElseThrow();
-            if (inventoryItem.getQuantity() < orderItem.getQuantity()) {
+            var inventoryItem = inventoryItemRepository.findById(orderItem.getInventoryItem().getId()).orElseThrow(EntityNotFoundException::new);
+
+            boolean isEnoughQuantity = inventoryItem.getQuantity() >= orderItem.getQuantity();
+            if (!isEnoughQuantity) {
                 throw new NotEnoughQuantityException("Not enough quantity for product " + orderItem.getInventoryItem().getProduct().getName());
             }
-            inventoryItem.setQuantity(inventoryItem.getQuantity() - orderItem.getQuantity());
+            var newQuantity = inventoryItem.getQuantity() - orderItem.getQuantity();
+            inventoryItem.setQuantity(newQuantity);
             inventoryItemRepository.save(inventoryItem);
+
+            updateQuantitiesInProduct(order, orderItem);
+        }
+    }
+
+    private void updateQuantitiesInProduct(Order order, OrderItem orderItem) {
+        var product = orderItem.getInventoryItem().getProduct();
+        if (order.getOrderType() == OrderType.PURCHASE) {
+            var newQuantityRemaining = product.getQuantityRemaining() + orderItem.getQuantity();
+            product.setQuantityRemaining(newQuantityRemaining);
+            productRepository.save(product);
+        } else if (order.getOrderType() == OrderType.SALE) {
+            var newQuantityRemaining = product.getQuantityRemaining() - orderItem.getQuantity();
+            var newQuantitySold = product.getQuantitySold() + orderItem.getQuantity();
+            product.setQuantityRemaining(newQuantityRemaining);
+            product.setQuantitySold(newQuantitySold);
+            productRepository.save(product);
         }
     }
 
