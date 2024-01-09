@@ -18,7 +18,8 @@ public interface OrderRepository extends JpaRepository<Order, Integer>, JpaSpeci
     @Query("SELECT SUM(o.total) FROM Order o WHERE o.orderType = ?1 AND o.status = ?2")
     Double sumTotalByOrderTypeAndStatus(OrderType orderType, OrderStatus orderStatus);
 
-    @Query("select  SUM(total), MONTH(createdTime), YEAR(createdTime) from Order" +
+    @Query("select  SUM(total), MONTH(createdTime), YEAR(createdTime) " +
+                    "FROM Order " +
                     "WHERE status = 'COMPLETED' AND orderType = 'SALE'" +
                     "GROUP BY YEAR(createdTime), MONTH(createdTime)"
             )
