@@ -45,7 +45,6 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<OrderDTO> createOrder(@RequestBody Order order) {
-        System.out.println("Order: " + order);
         return ResponseEntity.ok(orderService.createOrder(order));
     }
 
