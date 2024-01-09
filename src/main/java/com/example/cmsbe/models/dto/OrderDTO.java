@@ -42,7 +42,7 @@ public class OrderDTO {
     public OrderDTO(Order order) {
         this.id = order.getId();
         this.createdUserId = order.getCreatedUser().getId();
-        this.customerId = order.getCustomer().getId();
+        this.customerId = order.getCustomer() != null ? order.getCustomer().getId() : null;
         this.depositedMoney = order.getDepositedMoney();
         this.discount = order.getDiscount();
         this.status = order.getStatus();
