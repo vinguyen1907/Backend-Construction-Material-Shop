@@ -2,16 +2,15 @@ package com.example.cmsbe.utils;
 
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.OrderItem;
+import com.example.cmsbe.models.SaleOrder;
 
 import java.util.List;
 
 public class OrderUtil {
-    public static double calculateTotal(List<Order> orders) {
+    public static double calculateTotal(List<SaleOrder> orders) {
         double total = 0;
         for (Order order : orders) {
-            for (OrderItem item : order.getOrderItems()) {
-                total += item.getQuantity() * item.getInventoryItem().getProduct().getUnitPrice();
-            }
+            total += order.getTotal();
         }
         return total;
     }

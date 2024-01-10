@@ -39,7 +39,7 @@ public class Customer {
             cascade = CascadeType.PERSIST,
             fetch = FetchType.LAZY
     )
-    private List<Order> orders;
+    private List<SaleOrder> orders;
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<Debt> debts;
     private boolean isDeleted = false;

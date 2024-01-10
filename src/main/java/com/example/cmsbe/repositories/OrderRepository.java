@@ -10,9 +10,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface OrderRepository extends JpaRepository<Order, Integer>, JpaSpecificationExecutor<Order> {
-    List<Order> findByCustomerId(Integer customerId);
-    Integer countByCustomerId(Integer customerId);
+public interface OrderRepository<T extends Order> extends JpaRepository<T, Integer>, JpaSpecificationExecutor<Order> {
+
     List<Order> findByOrderByCreatedTimeDesc(Limit limit);
 
     @Query("SELECT SUM(o.total) FROM Order o WHERE o.orderType = ?1 AND o.status = ?2")

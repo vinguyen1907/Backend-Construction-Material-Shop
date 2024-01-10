@@ -1,5 +1,6 @@
 package com.example.cmsbe.services;
 
+import com.example.cmsbe.models.SaleOrder;
 import com.example.cmsbe.models.dto.CustomerDTO;
 import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
@@ -7,6 +8,7 @@ import com.example.cmsbe.models.Customer;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.repositories.CustomerRepository;
 import com.example.cmsbe.repositories.OrderRepository;
+import com.example.cmsbe.repositories.SaleOrderRepository;
 import com.example.cmsbe.services.interfaces.ICustomerService;
 import com.example.cmsbe.utils.ListUtil;
 import com.example.cmsbe.utils.OrderUtil;
@@ -22,7 +24,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerService implements ICustomerService {
     private final CustomerRepository customerRepository;
-    private final OrderRepository orderRepository;
+    private final OrderRepository<Order> orderRepository;
+    private final SaleOrderRepository saleOrderRepository;
 
     @Override
     public List<Customer> getAllCustomer() {
@@ -52,7 +55,7 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public List<OrderDTO> getCustomerOrders(Integer customerId) {
-        return ListUtil.convertToOrderDTOList(orderRepository.findByCustomerId(customerId));
+        return ListUtil.convertToOrderDTOList(saleOrderRepository.findByCustomerId(customerId));
     }
 
     @Override

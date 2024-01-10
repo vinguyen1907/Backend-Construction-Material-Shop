@@ -1,10 +1,7 @@
 package com.example.cmsbe.services;
 
 import com.example.cmsbe.error_handlers.custom_exceptions.NotEnoughQuantityException;
-import com.example.cmsbe.models.Debt;
-import com.example.cmsbe.models.InventoryItem;
-import com.example.cmsbe.models.Order;
-import com.example.cmsbe.models.OrderItem;
+import com.example.cmsbe.models.*;
 import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
@@ -34,7 +31,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OrderService implements IOrderService {
-    private final OrderRepository orderRepository;
+    private final OrderRepository<Order> orderRepository;
     private final DebtRepository debtRepository;
     private final InventoryItemRepository inventoryItemRepository;
     private final ProductRepository productRepository;
@@ -63,9 +60,12 @@ public class OrderService implements IOrderService {
         order = orderRepository.save(order);
         Integer orderId = order.getId();
 
-        updateOrderItems(order);
-        updateDebt(order);
-        decreaseInventory(order);
+        if (order instanceof PurchaseOrder) {
+            handlePurchaseOrder((PurchaseOrder) order);
+        } else {
+            handleSaleOrder((SaleOrder) order);
+        }
+
         // update order with new order items
         orderRepository.save(order);
 
@@ -74,11 +74,25 @@ public class OrderService implements IOrderService {
         // Clear all entities to get the latest data from the database
         entityManager.clear();
 
-        if (orderRepository.findById(orderId).isEmpty()) return null;
-        return new OrderDTO(orderRepository.findById(orderId).get());
+        var reloadedOrder = orderRepository.findById(orderId);
+        return reloadedOrder.map(Order::toDTO).orElse(null);
     }
 
-    private void decreaseInventory(Order order) {
+    private void handlePurchaseOrder(PurchaseOrder order) {
+        var inventoryItems = order.getNewInventoryItems();
+        for (InventoryItem inventoryItem : inventoryItems) {
+            inventoryItemRepository.save(inventoryItem);
+            updateQuantitiesInProduct(inventoryItem);
+        }
+    }
+
+    private void handleSaleOrder(SaleOrder order) {
+        fillOrderItems(order);
+        createDebtInDB(order);
+        decreaseInventoryQuantity(order);
+    }
+
+    private void decreaseInventoryQuantity(SaleOrder order) {
         var orderItems = order.getOrderItems();
         for (OrderItem orderItem : orderItems) {
             var inventoryItem = inventoryItemRepository.findById(orderItem.getInventoryItem().getId()).orElseThrow(EntityNotFoundException::new);
@@ -91,26 +105,27 @@ public class OrderService implements IOrderService {
             inventoryItem.setQuantity(newQuantity);
             inventoryItemRepository.save(inventoryItem);
 
-            updateQuantitiesInProduct(order, orderItem);
+            updateQuantitiesInProduct(orderItem);
         }
     }
 
-    private void updateQuantitiesInProduct(Order order, OrderItem orderItem) {
+    private void updateQuantitiesInProduct(InventoryItem inventoryItem) {
+        var product = productRepository.findById(inventoryItem.getProduct().getId()).orElseThrow(EntityNotFoundException::new);
+        var newQuantityRemaining = product.getQuantityRemaining() + inventoryItem.getQuantity();
+        product.setQuantityRemaining(newQuantityRemaining);
+        productRepository.save(product);
+    }
+
+    private void updateQuantitiesInProduct(OrderItem orderItem) {
         var product = orderItem.getInventoryItem().getProduct();
-        if (order.getOrderType() == OrderType.PURCHASE) {
-            var newQuantityRemaining = product.getQuantityRemaining() + orderItem.getQuantity();
-            product.setQuantityRemaining(newQuantityRemaining);
-            productRepository.save(product);
-        } else if (order.getOrderType() == OrderType.SALE) {
-            var newQuantityRemaining = product.getQuantityRemaining() - orderItem.getQuantity();
-            var newQuantitySold = product.getQuantitySold() + orderItem.getQuantity();
-            product.setQuantityRemaining(newQuantityRemaining);
-            product.setQuantitySold(newQuantitySold);
-            productRepository.save(product);
-        }
+        var newQuantityRemaining = product.getQuantityRemaining() - orderItem.getQuantity();
+        var newQuantitySold = product.getQuantitySold() + orderItem.getQuantity();
+        product.setQuantityRemaining(newQuantityRemaining);
+        product.setQuantitySold(newQuantitySold);
+        productRepository.save(product);
     }
 
-    private void updateOrderItems(Order order) {
+    private void fillOrderItems(SaleOrder order) {
         List<OrderItem> newOrderItems = new ArrayList<>();
         for (var i = 0; i < order.getOrderItems().size(); i++) {
             OrderItem newItem = order.getOrderItems().get(i);
@@ -126,7 +141,7 @@ public class OrderService implements IOrderService {
         order.setOrderItemsAndCalculateTotal(newOrderItems);
     }
 
-    private void updateDebt(Order order) {
+    private void createDebtInDB(SaleOrder order) {
         Debt debt = order.getDebt();
         if (debt == null) return;
         debt.setOrder(order);
@@ -138,14 +153,14 @@ public class OrderService implements IOrderService {
     public Order updateOrder(Integer orderId, OrderStatus newStatus) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order with ID" + orderId + " not found."));
         order.setStatus(newStatus);
-        if (newStatus == OrderStatus.CANCELLED) {
-            revertInventory(order);
+        if (order instanceof SaleOrder && newStatus == OrderStatus.CANCELLED) {
+            revertInventory((SaleOrder) order);
         }
 
         return orderRepository.save(order);
     }
 
-    private void revertInventory(Order order) {
+    private void revertInventory(SaleOrder order) {
         List<OrderItem> orderItems = order.getOrderItems();
         for (OrderItem orderItem : orderItems) {
             var inventoryItem = orderItem.getInventoryItem();
@@ -170,7 +185,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public PaginationDTO<OrderDTO> searchWithFilter(int page, int size, Integer id, String customerName, OrderStatus status, LocalDate startDate, LocalDate endDate) {
+    public PaginationDTO<OrderDTO> searchWithFilter(int page, int size, Integer id, String customerName, OrderStatus status, OrderType orderType, LocalDate startDate, LocalDate endDate) {
         Specification<Order> spec = Specification.where(null);
         if (id != null) {
             spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("id"), id));
@@ -180,6 +195,9 @@ public class OrderService implements IOrderService {
         }
         if (status != null) {
             spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("status"), status));
+        }
+        if (orderType != null) {
+            spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.equal(root.get("orderType"), orderType));
         }
         if (startDate != null) {
             spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("createdTime"), startDate));

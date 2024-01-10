@@ -21,9 +21,8 @@ public class OrderItem {
     @ManyToOne()
     private InventoryItem inventoryItem;
 //    private Product product;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
-    @JsonIgnore
     private Order order;
     @Positive(message = "Quantity must be positive.")
     private int quantity;
