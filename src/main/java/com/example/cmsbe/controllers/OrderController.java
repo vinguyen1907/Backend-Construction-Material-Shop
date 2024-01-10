@@ -1,10 +1,11 @@
 package com.example.cmsbe.controllers;
 
-import com.example.cmsbe.models.dto.OrderDTO;
-import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.Order;
+import com.example.cmsbe.models.dto.OrderDTO;
+import com.example.cmsbe.models.dto.OrderRequestDTO;
+import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
-import com.example.cmsbe.services.OrderService;
+import com.example.cmsbe.models.enums.OrderType;
 import com.example.cmsbe.services.interfaces.IOrderService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -27,10 +28,11 @@ public class OrderController {
             @RequestParam(required = false) Integer id,
             @RequestParam(required = false) String customerName,
             @RequestParam(required = false) OrderStatus status,
+            @RequestParam(required = false) OrderType orderType,
             @RequestParam(required = false) LocalDate startDate,
             @RequestParam(required = false) LocalDate endDate
     ) {
-        return ResponseEntity.ok(orderService.searchWithFilter(page, size, id, customerName, status, startDate, endDate));
+        return ResponseEntity.ok(orderService.searchWithFilter(page, size, id, customerName, status, orderType, startDate, endDate));
     }
 
     @GetMapping("/{orderId}")
@@ -44,7 +46,15 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<OrderDTO> createOrder(@RequestBody Order order) {
+    public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderRequestDTO requestOrder) {
+        Order order;
+        if (requestOrder.getOrderType() == OrderType.PURCHASE) {
+            order = requestOrder.toPurchaseOrder();
+        } else if (requestOrder.getOrderType() == OrderType.SALE) {
+            order = requestOrder.toSaleOrder();
+        } else {
+            throw new IllegalArgumentException("Order type is not valid");
+        }
         return ResponseEntity.ok(orderService.createOrder(order));
     }
 

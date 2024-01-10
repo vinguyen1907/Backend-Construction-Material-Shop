@@ -10,18 +10,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
 public class OverviewService implements IOverviewService {
-    private final OrderRepository orderRepository;
+    private final OrderRepository<Order> orderRepository;
     private final ProductRepository productRepository;
 
     @Override
     public Overview getOverview() {
         var result = orderRepository.getMonthlySales();
-        var monthlySales = result.stream()
+        var monthlySales =
+                result.stream()
                 .map(objects -> new MonthlySalesItem(LocalDate.of((Integer) objects[2], (Integer) objects[1], 1), (Double) objects[0]))
                 .toList();
         return new Overview(

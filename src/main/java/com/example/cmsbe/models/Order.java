@@ -3,60 +3,46 @@ package com.example.cmsbe.models;
 import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.models.enums.OrderType;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="order_type",
+        discriminatorType = DiscriminatorType.STRING)
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "order_table")
-@ToString(exclude = {"orderItems", "debt"})
 //@SQLDelete(sql = "UPDATE order_table SET is_deleted = true WHERE id=?")
 //@SQLRestriction("is_deleted = false")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    protected Integer id;
     @ManyToOne
-    private User createdUser;
-    @ManyToOne
-//    @JoinColumn(name = "id")
-    private Customer customer;
-    private Double depositedMoney;
-    private Double discount;
+    protected User createdUser;
+    protected Double discount;
     @Enumerated(EnumType.STRING)
-    private OrderStatus status;
-    @OneToMany(mappedBy = "order", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-    private List<OrderItem> orderItems;
+    protected OrderStatus status;
+    @Column(name="order_type", insertable = false, updatable = false)
     @Enumerated(EnumType.STRING)
-    private OrderType orderType = OrderType.SALE;
-    private Double total;
-    @OneToOne
-    @JoinColumn(name = "debt_id", referencedColumnName = "id")
-    private Debt debt;
+    protected OrderType orderType = OrderType.SALE;
+    protected Double total;
 
     // Auditing variable
-    private LocalDateTime createdTime;
-    private LocalDateTime updatedTime;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    protected LocalDateTime createdTime;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    protected LocalDateTime updatedTime;
 //    private Boolean isDeleted = false;
-
-    public void setOrderItemsAndCalculateTotal(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
-        calculateTotal();
-    }
-
-    private void calculateTotal() {
-        double total = 0;
-        for (OrderItem item : orderItems) {
-            total += item.getQuantity() * item.getInventoryItem().getProduct().getUnitPrice();
-        }
-        this.total = total;
-    }
 
     public OrderDTO toDTO() {
         return new OrderDTO(this);
