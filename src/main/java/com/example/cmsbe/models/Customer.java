@@ -47,4 +47,12 @@ public class Customer {
     public CustomerDTO toDTO() {
         return new CustomerDTO(this);
     }
+
+    public Double getTotalDebt() {
+        double totalDebt = 0;
+        for (Debt debt : debts) {
+            totalDebt += debt.getAmount();
+        }
+        return totalDebt;
+    }
 }

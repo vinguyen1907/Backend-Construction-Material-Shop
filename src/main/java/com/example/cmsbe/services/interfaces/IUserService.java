@@ -14,6 +14,7 @@ public interface IUserService {
     PaginationDTO<User> searchEmployees(String name, String email, int page, int size);
     User createEmployee(User user);
     User getEmployeeById(Integer employeeId);
+    User getUserByEmail(String email);
     User updateEmployee(
             Integer id,
             String email,

@@ -8,6 +8,7 @@ import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.services.generators.CustomerExcelGenerator;
 import com.example.cmsbe.services.generators.EmployeeExcelGenerator;
 import com.example.cmsbe.services.interfaces.ICustomerService;
+import com.example.cmsbe.services.interfaces.IUserService;
 import com.example.cmsbe.utils.ListUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
@@ -28,6 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerController {
     private final ICustomerService customerService;
+    private final IUserService userService;
 
     @GetMapping
     public ResponseEntity<PaginationDTO<CustomerDTO>> getAllCustomer(
@@ -90,7 +92,7 @@ public class CustomerController {
         response.setHeader(headerKey, headerValue);
 
         List<Customer> customers = customerService.getAllCustomer();
-        CustomerExcelGenerator excelExporter = new CustomerExcelGenerator(customers);
+        CustomerExcelGenerator excelExporter = new CustomerExcelGenerator(userService, customers);
 
         excelExporter.export(response);
     }
