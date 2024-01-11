@@ -129,7 +129,7 @@ public class EmployeeController {
         response.setHeader(headerKey, headerValue);
 
         List<User> employees = userService.getAllEmployees();
-        EmployeeExcelGenerator excelExporter = new EmployeeExcelGenerator(employees);
+        EmployeeExcelGenerator excelExporter = new EmployeeExcelGenerator(userService, employees);
 
         excelExporter.export(response);
     }

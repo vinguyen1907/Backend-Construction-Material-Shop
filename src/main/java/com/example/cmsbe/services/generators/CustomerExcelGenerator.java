@@ -1,70 +1,83 @@
 package com.example.cmsbe.services.generators;
 
 import com.example.cmsbe.models.Customer;
+import com.example.cmsbe.services.interfaces.IUserService;
+import com.example.cmsbe.utils.DecimalUtil;
 import com.example.cmsbe.utils.OrderUtil;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.util.List;
-
-import static org.apache.poi.ss.util.CellUtil.createCell;
 
 public class CustomerExcelGenerator extends ExcelGenerator {
     private final List<Customer> customers;
 
-    public CustomerExcelGenerator(List<Customer> customers) {
+    public CustomerExcelGenerator(IUserService userService, List<Customer> customers) {
+        super(userService);
         this.customers = customers;
     }
 
     @Override
+    protected void writeTitleLine() {
+        createNewSheet("Customers");
+
+        CellStyle titleStyle = createTitleStyle();
+
+        Row sheetNameRow = createRow(titleRowNum);
+        createCell(sheetNameRow, startColumn, "CMS CUSTOMER REPORT", titleStyle);
+        var mergedRegionStart = startColumn;
+        var mergedRegionEnd = 8;
+        sheet.addMergedRegion(new CellRangeAddress(sheetNameRow.getRowNum(), sheetNameRow.getRowNum(), mergedRegionStart, mergedRegionEnd));
+    }
+
+
+    @Override
     protected void writeHeaderLine() {
-        super.createNewSheet("Customers");
+        CellStyle style = createHeaderStyle();
+        style.setVerticalAlignment(VerticalAlignment.CENTER);
 
-        Row row = super.createRow(0);
+        Row row = super.createRow(headerRowNum);
+        row.setHeight((short) (row.getHeight() * 1.5));
 
-        CellStyle style = workbook.createCellStyle();
-        XSSFFont font = workbook.createFont();
-        font.setBold(true);
-        font.setFontHeight(16);
-        style.setFont(font);
-
-        createCell(row, 0, "Name", style);
-        createCell(row, 1, "Phone", style);
-        createCell(row, 2, "Date of birth", style);
-        createCell(row, 3, "Phone", style);
-        createCell(row, 4, "Contact address", style);
-        createCell(row, 5, "Orders", style);
-        createCell(row, 6, "Orders Value", style);
+        createCell(row, startColumn, "No", style);
+        createCell(row, startColumn + 1, "Name", style);
+        createCell(row, startColumn + 2, "Phone", style);
+        createCell(row, startColumn + 3, "Date of birth", style);
+        createCell(row, startColumn + 4, "Contact address", style);
+        createCell(row, startColumn + 5, "Orders", style);
+        createCell(row, startColumn + 6, "Orders Value", style);
+        createCell(row, startColumn + 7, "Debt", style);
     }
 
     @Override
     protected void writeDataLines() {
-        int rowCount = 1;
+        int rowCount = headerRowNum + 1;
 
-        CellStyle style = workbook.createCellStyle();
-        XSSFFont font = workbook.createFont();
-        font.setFontHeight(14);
-        style.setFont(font);
+        CellStyle style = createCellStyle();
 
+        int index = 0;
+        int columnCount = startColumn;
         for (Customer customer : customers) {
             Row row = super.createRow(rowCount++);
-            int columnCount = 0;
+            columnCount = startColumn;
 
+            createCell(row, columnCount++, index++, style);
             createCell(row, columnCount++, customer.getName(), style);
-            sheet.autoSizeColumn(0);
             createCell(row, columnCount++, customer.getPhone(), style);
-            sheet.autoSizeColumn(1);
             createCell(row, columnCount++, customer.getDateOfBirth().toString(), style);
-            sheet.autoSizeColumn(2);
             createCell(row, columnCount++, customer.getContactAddress(), style);
-            sheet.autoSizeColumn(3);
-            createCell(row, columnCount++, customer.getDateOfBirth().toString(), style);
-            sheet.autoSizeColumn(4);
-            createCell(row, columnCount++, String.valueOf((long) customer.getOrders().size()), style);
-            sheet.autoSizeColumn(5);
-            createCell(row, columnCount, String.valueOf(OrderUtil.calculateTotal(customer.getOrders())), style);
-            sheet.autoSizeColumn(6);
+            createCell(row, columnCount++, customer.getOrders().size(), style);
+            createCell(row, columnCount++, DecimalUtil.format(OrderUtil.calculateTotal(customer.getOrders())), style);
+            createCell(row, columnCount, DecimalUtil.format(customer.getTotalDebt()), style);
+        }
+
+        for (int i = startColumn; i < columnCount + startColumn; i++) {
+            sheet.autoSizeColumn(i);
+            sheet.setColumnWidth(i, (int) (sheet.getColumnWidth(i) * 1.2)); // Adjust the padding factor as needed
         }
     }
+
+
 }

@@ -5,6 +5,7 @@ import com.example.cmsbe.models.Product;
 import com.example.cmsbe.services.CloudinaryService;
 import com.example.cmsbe.services.generators.ProductExcelGenerator;
 import com.example.cmsbe.services.interfaces.IProductService;
+import com.example.cmsbe.services.interfaces.IUserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.List;
 public class ProductController {
     private final IProductService productService;
     private final CloudinaryService cloudinaryService;
+    private final IUserService userService;
 
     @GetMapping
     public ResponseEntity<PaginationDTO<Product>> getAllProducts(
@@ -123,7 +125,7 @@ public class ProductController {
         response.setHeader(headerKey, headerValue);
 
         List<Product> products = productService.getAllProducts();
-        ProductExcelGenerator excelExporter = new ProductExcelGenerator(products);
+        ProductExcelGenerator excelExporter = new ProductExcelGenerator(userService, products);
 
         excelExporter.export(response);
     }
