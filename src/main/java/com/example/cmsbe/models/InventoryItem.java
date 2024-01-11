@@ -32,7 +32,6 @@ public class InventoryItem {
     @Future(message = "Expiry date must be in the future.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate expiryDate;
-    @Past(message = "Imported date must be in the past.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate importedDate;
     private Double importedPrice = 0.0;
