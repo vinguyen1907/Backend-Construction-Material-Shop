@@ -1,8 +1,6 @@
 package com.example.cmsbe.repositories;
 
-import com.example.cmsbe.models.InventoryItem;
 import com.example.cmsbe.models.User;
-import com.example.cmsbe.models.enums.EmployeeType;
 import com.example.cmsbe.models.enums.UserType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,5 +15,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     Optional<User> findByEmail(String email);
     List<User> findByUserType(UserType userType);
     Page<User> findByUserType(UserType userType, Pageable pageable);
-    Page<User> findByUserTypeAndNameContainingAndEmailContaining(UserType userType, String name, String email, Pageable pageable);
+    Page<User> findByUserTypeAndNameContaining(UserType userType, String name, Pageable pageable);
+    Page<User> findByUserTypeAndEmailContaining(UserType userType, String name, Pageable pageable);
+    Page<User> findByUserTypeAndPhoneContaining(UserType userType, String name, Pageable pageable);
 }

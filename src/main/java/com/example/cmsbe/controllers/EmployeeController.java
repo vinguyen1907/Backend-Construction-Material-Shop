@@ -3,6 +3,7 @@ package com.example.cmsbe.controllers;
 import com.example.cmsbe.config.Constants;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.User;
+import com.example.cmsbe.models.enums.EmployeeSearchBy;
 import com.example.cmsbe.models.enums.EmployeeType;
 import com.example.cmsbe.models.enums.UserType;
 import com.example.cmsbe.services.CloudinaryService;
@@ -41,12 +42,12 @@ public class EmployeeController {
 
     @GetMapping("/search")
     public ResponseEntity<PaginationDTO<User>> searchEmployees(
-            @RequestParam(required = false, defaultValue = "") String name,
-            @RequestParam(required = false, defaultValue = "") String email,
+            @RequestParam String keyword,
+            @RequestParam EmployeeSearchBy searchBy,
             @RequestParam Integer page,
             @RequestParam Integer size
     ) {
-        return ResponseEntity.ok(userService.searchEmployees(name, email, page, size));
+        return ResponseEntity.ok(userService.searchEmployees(keyword, searchBy, page, size));
     }
 
     @GetMapping("/{employeeId}")
