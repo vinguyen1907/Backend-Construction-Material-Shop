@@ -17,5 +17,5 @@ public interface  IOrderService {
     void deleteOrder(Integer orderId);
     // customer id, created time, status
     PaginationDTO<OrderDTO> searchWithFilter(int page, int size, Integer id, String customerName, OrderStatus status, OrderType orderType, LocalDate startDate, LocalDate endDate);
-    List<OrderDTO> getNewestOrders(int size);
+    List<OrderDTO> getNewestOrders();
 }

@@ -216,8 +216,8 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public List<OrderDTO> getNewestOrders(int size) {
-        return orderRepository.findByOrderByCreatedTimeDesc(Limit.of(size))
+    public List<OrderDTO> getNewestOrders() {
+        return orderRepository.findByOrderByCreatedTimeDesc()
                 .stream().map(Order::toDTO)
                 .toList();
     }
