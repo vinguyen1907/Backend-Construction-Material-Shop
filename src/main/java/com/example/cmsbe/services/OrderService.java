@@ -15,6 +15,7 @@ import com.example.cmsbe.utils.ListUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Limit;
@@ -175,16 +176,6 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public PaginationDTO<Order> searchByIdAndStatusAndCreatedTime(int page, int size, Integer id, OrderStatus status, LocalDate startDate, LocalDate endDate) {
-        return null;
-    }
-
-    @Override
-    public PaginationDTO<Order> searchByCustomerNameAndStatusAndCreatedTime(int page, int size, String customerName, OrderStatus status, LocalDate startDate, LocalDate endDate) {
-        return null;
-    }
-
-    @Override
     public PaginationDTO<OrderDTO> searchWithFilter(int page, int size, Integer id, String customerName, OrderStatus status, OrderType orderType, LocalDate startDate, LocalDate endDate) {
         Specification<Order> spec = Specification.where(null);
         if (id != null) {
@@ -205,6 +196,12 @@ public class OrderService implements IOrderService {
         if (endDate != null) {
             spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.lessThan(root.get("createdTime"), endDate));
         }
+        spec = spec.and((root, query, criteriaBuilder) -> {
+                    query.orderBy(criteriaBuilder.desc(root.get("createdTime")));
+                    return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
+                }
+        );
+
         Pageable pageable = PageRequest.of(page, size);
         var result = orderRepository.findAll(spec, pageable);
         var orders = result.getContent();
