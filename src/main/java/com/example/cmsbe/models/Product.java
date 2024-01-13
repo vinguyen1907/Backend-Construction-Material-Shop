@@ -1,5 +1,6 @@
 package com.example.cmsbe.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,7 +32,9 @@ public class Product {
     private Integer quantitySold = 0;
     private Integer quantityRemaining = 0;
     // Internal variables
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
     private LocalDateTime createdAt = LocalDateTime.now();
+    @JsonFormat(pattern = "yyyy-MM-dd hh:mm")
     private LocalDateTime updatedAt = LocalDateTime.now();
     private boolean isDeleted = false;
 
