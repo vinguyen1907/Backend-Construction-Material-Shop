@@ -1,7 +1,8 @@
 package com.example.cmsbe.services;
 
-import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.User;
+import com.example.cmsbe.models.dto.PaginationDTO;
+import com.example.cmsbe.models.enums.EmployeeSearchBy;
 import com.example.cmsbe.models.enums.EmployeeType;
 import com.example.cmsbe.models.enums.UserType;
 import com.example.cmsbe.repositories.UserRepository;
@@ -35,10 +36,16 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public PaginationDTO<User> searchEmployees(String name, String email, int page, int size) {
+    public PaginationDTO<User> searchEmployees(String keyword, EmployeeSearchBy searchBy, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        var result = userRepository.findByUserTypeAndNameContainingAndEmailContaining(UserType.EMPLOYEE, name, email, pageable);
-        return new PaginationDTO<>(result);
+        return switch (searchBy) {
+            case EMAIL ->
+                    new PaginationDTO<>(userRepository.findByUserTypeAndEmailContaining(UserType.EMPLOYEE, keyword, pageable));
+            case PHONE ->
+                    new PaginationDTO<>(userRepository.findByUserTypeAndPhoneContaining(UserType.EMPLOYEE, keyword, pageable));
+            default ->
+                    new PaginationDTO<>(userRepository.findByUserTypeAndNameContaining(UserType.EMPLOYEE, keyword, pageable));
+        };
     }
 
     @Override
