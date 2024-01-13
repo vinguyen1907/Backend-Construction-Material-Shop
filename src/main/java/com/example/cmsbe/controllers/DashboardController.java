@@ -18,7 +18,6 @@ import java.util.List;
 public class DashboardController {
     private final IDashboardService dashboardService;
     private final IOrderService orderService;
-    private final IWarehouseService warehouseService;
 
     @GetMapping
     public DashboardResultDTO getDashboard() {
@@ -27,7 +26,7 @@ public class DashboardController {
         long productCount = dashboardService.getProductCount();
         Double revenue = dashboardService.getRevenue();
         revenue = revenue == null ? 0 : revenue;
-        List<OrderDTO> newestOrders = orderService.getNewestOrders(15);
+        List<OrderDTO> newestOrders = orderService.getNewestOrders();
         double soldQuantity = dashboardService.getTotalSoldCapacity();
         double remainingQuantity = dashboardService.getTotalRemainingCapacity();
         double totalQuantity = soldQuantity + remainingQuantity;

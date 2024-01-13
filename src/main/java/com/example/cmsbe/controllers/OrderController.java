@@ -42,7 +42,7 @@ public class OrderController {
 
     @GetMapping("newest/{size}")
     public ResponseEntity<List<OrderDTO>> getNewestOrders( @PathVariable Integer size) {
-        return ResponseEntity.ok(orderService.getNewestOrders(size));
+        return ResponseEntity.ok(orderService.getNewestOrders());
     }
 
     @PostMapping
