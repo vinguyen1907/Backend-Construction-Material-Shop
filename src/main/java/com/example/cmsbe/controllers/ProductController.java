@@ -9,6 +9,8 @@ import com.example.cmsbe.services.interfaces.IUserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,17 +32,10 @@ public class ProductController {
     @GetMapping
     public ResponseEntity<PaginationDTO<Product>> getAllProducts(
             @RequestParam int page,
-            @RequestParam int size,
-            @RequestParam(name = "origin", required = false) String origin,
-            @RequestParam(name = "minPrice", defaultValue = "0") double minPrice,
-            @RequestParam(name = "maxPrice", defaultValue = "-1") double maxPrice
+            @RequestParam int size
     ) {
-        maxPrice = maxPrice == -1 ? Double.MAX_VALUE : maxPrice;
-        if (origin != null) {
-            return ResponseEntity.ok(productService.getProductsByOriginAndPriceBetween(page, size, origin, minPrice, maxPrice));
-        } else {
-            return ResponseEntity.ok(productService.getProductsByPriceBetween(page, size, minPrice, maxPrice));
-        }
+        Pageable pageable = PageRequest.of(page, size);
+            return ResponseEntity.ok(productService.getAllProducts(pageable));
     }
 
     @GetMapping("/{productId}")
@@ -100,19 +95,22 @@ public class ProductController {
 
     @GetMapping("/search")
     public ResponseEntity<PaginationDTO<Product>> searchProducts(
-            @RequestParam(name = "q") String keyword,
+            @RequestParam String keyword,
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam(name = "origin", required = false) String origin,
             @RequestParam(name = "minPrice", defaultValue = "0") double minPrice,
-            @RequestParam(name = "maxPrice", defaultValue = "-1") double maxPrice
+            @RequestParam(name = "maxPrice", defaultValue = "-1") double maxPrice,
+            @RequestParam(required = false) String calculationUnit
     ) {
+//        maxPrice = maxPrice == -1 ? Double.MAX_VALUE : maxPrice;
+//        if (origin == null) {
+//            return ResponseEntity.ok(productService.searchProductByPriceBetween(keyword, page, size, minPrice, maxPrice));
+//        } else {
+//            return ResponseEntity.ok(productService.searchProductByOriginAndPriceBetween(keyword, page, size, origin, minPrice, maxPrice));
+//        }
         maxPrice = maxPrice == -1 ? Double.MAX_VALUE : maxPrice;
-        if (origin == null) {
-            return ResponseEntity.ok(productService.searchProductByPriceBetween(keyword, page, size, minPrice, maxPrice));
-        } else {
-            return ResponseEntity.ok(productService.searchProductByOriginAndPriceBetween(keyword, page, size, origin, minPrice, maxPrice));
-        }
+        return ResponseEntity.ok(productService.search(keyword, origin, minPrice, maxPrice, calculationUnit, page, size));
     }
 
     @GetMapping("/export/excel")
