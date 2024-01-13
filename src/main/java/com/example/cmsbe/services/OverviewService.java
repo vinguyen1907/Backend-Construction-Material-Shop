@@ -9,6 +9,7 @@ import com.example.cmsbe.utils.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,8 +25,8 @@ public class OverviewService implements IOverviewService {
         var result = orderRepository.getMonthlySales();
         var monthlySales =
                 result.stream()
-                .map(objects -> new MonthlySalesItem(LocalDate.of((Integer) objects[2], (Integer) objects[1], 1), (Double) objects[0]))
-                .toList();
+                        .map(objects -> new MonthlySalesItem(LocalDate.of((Integer) objects[2], (Integer) objects[1], 1), (Double) objects[0]))
+                        .toList();
         return new Overview(
                 new MonthlySales(monthlySales),
                 new OrderStatistics(
@@ -49,8 +50,17 @@ public class OverviewService implements IOverviewService {
                                 )
                         ).toDTO())
                         .toList(),
-                productRepository.getOnLowestProductStock()
+//                productRepository.getOnLowestProductStock(),
+                productRepository.getAggregatedMonthlySales()
+                        .stream().map(object -> {
+                            return new AggregatedMonthlySaleItem(
+                                    (Integer) object[0],
+                                        String.valueOf(object[1]),
+                                    Double.parseDouble(object[2].toString()),
+                                    Double.parseDouble(object[3].toString())
+                            );
+                                }
+                        ).toList()
         );
     }
-
 }
