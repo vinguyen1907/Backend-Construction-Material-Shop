@@ -12,7 +12,7 @@ import java.util.List;
 
 public interface OrderRepository<T extends Order> extends JpaRepository<T, Integer>, JpaSpecificationExecutor<Order> {
 
-    @Query("SELECT o FROM Order o WHERE o.orderType = 'SALE' AND o.status = 'COMPLETED' ORDER BY o.createdTime LIMIT 15")
+    @Query("SELECT o FROM Order o WHERE o.orderType = 'SALE' ORDER BY o.createdTime LIMIT 15")
     List<Order> findByOrderByCreatedTimeDesc();
 
     @Query("SELECT SUM(o.total) FROM Order o WHERE o.orderType = ?1 AND o.status = ?2")
