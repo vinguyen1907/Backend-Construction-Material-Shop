@@ -34,7 +34,9 @@ public class SaleOrderDTO extends OrderDTO {
             Debt debt
     ) {
         super(id, createdUser.getId(), discount, status, orderType, total, createdTime, updatedTime);
-        this.customerId = customer.getId();
+        if (customer != null) {
+            this.customerId = customer.getId();
+        }
         this.depositedMoney = depositedMoney;
         this.orderItems = orderItems.stream().map(OrderItem::toDTO).toList();
         if (debt != null) {
