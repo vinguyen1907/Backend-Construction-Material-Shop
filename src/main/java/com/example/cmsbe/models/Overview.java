@@ -14,5 +14,6 @@ public class Overview {
     private MonthlySales monthlySales;
     private OrderStatistics orderStatistics;
     private List<CustomerDTO> valuableCustomers;
-    private List<Product> lowOnStockItems;
+//    private List<Product> lowOnStockItems;
+    private List<AggregatedMonthlySaleItem> aggregatedMonthlySales;
 }
