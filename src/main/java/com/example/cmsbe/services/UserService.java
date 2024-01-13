@@ -43,6 +43,8 @@ public class UserService implements IUserService {
                     new PaginationDTO<>(userRepository.findByUserTypeAndEmailContaining(UserType.EMPLOYEE, keyword, pageable));
             case PHONE ->
                     new PaginationDTO<>(userRepository.findByUserTypeAndPhoneContaining(UserType.EMPLOYEE, keyword, pageable));
+            case CODE ->
+                    new PaginationDTO<>(userRepository.findByUserTypeAndEmployeeCodeContaining(UserType.EMPLOYEE, keyword, pageable));
             default ->
                     new PaginationDTO<>(userRepository.findByUserTypeAndNameContaining(UserType.EMPLOYEE, keyword, pageable));
         };
