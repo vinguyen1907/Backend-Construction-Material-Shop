@@ -7,7 +7,7 @@ public interface IInventoryItemService {
     PaginationDTO<InventoryItem> getAllInventoryItems(int page, int size);
 //    int getCount();
     InventoryItem getInventoryItemById(Integer inventoryItemId);
-    PaginationDTO<InventoryItem> getAllInventoryItemsByProductName(String keyword, Integer warehouseId, int page, int size);
+    PaginationDTO<InventoryItem> getAllInventoryItemsByProductName(String productName, Integer warehouseId, int page, int size);
     InventoryItem createInventoryItem(InventoryItem inventoryItem);
     void deleteInventoryItem(Integer inventoryItemId);
 }
