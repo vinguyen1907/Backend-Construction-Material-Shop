@@ -67,7 +67,7 @@ public class OrderController {
     }
 
     @PutMapping("/{orderId}")
-    public ResponseEntity<Order> updateOrder(
+    public ResponseEntity<OrderDTO> updateOrder(
             @PathVariable Integer orderId,
             @RequestParam(name = "status") OrderStatus newStatus
     ) throws EntityNotFoundException {
