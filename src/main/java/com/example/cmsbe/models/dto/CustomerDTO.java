@@ -1,6 +1,7 @@
 package com.example.cmsbe.models.dto;
 
 import com.example.cmsbe.models.Customer;
+import com.example.cmsbe.models.Debt;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.SaleOrder;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -20,6 +21,7 @@ public class CustomerDTO {
     private String contactAddress;
     private String taxCode;
     private List<Integer> orderIds = new ArrayList<>();
+    private Double ordersValue;
     private List<DebtDTO> debts = new ArrayList<>();
     private boolean isDeleted;
 
@@ -34,13 +36,16 @@ public class CustomerDTO {
         List<SaleOrder> orders = customer.getOrders();
         if (orders == null) {
             this.orderIds = null;
+            this.ordersValue = 0.0;
         } else {
             orders.forEach(order -> this.orderIds.add(order.getId()));
+            this.ordersValue = orders.stream().mapToDouble(Order::getTotal).sum();
         }
-        if (orders == null) {
-            this.orderIds = null;
+        List<Debt> debts = customer.getDebts();
+        if (debts == null) {
+            this.debts = null;
         } else {
-            customer.getDebts().forEach(debt -> this.debts.add(debt.toDTO()));
+            debts.forEach(debt -> this.debts.add(debt.toDTO()));
         }
     }
 }
