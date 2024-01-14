@@ -5,6 +5,7 @@ import com.example.cmsbe.models.dto.ValuableCustomerDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.repositories.OrderRepository;
 import com.example.cmsbe.repositories.ProductRepository;
+import com.example.cmsbe.repositories.SaleOrderRepository;
 import com.example.cmsbe.services.interfaces.IOverviewService;
 import com.example.cmsbe.utils.DateTimeUtil;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class OverviewService implements IOverviewService {
     private final OrderRepository<Order> orderRepository;
+    private final SaleOrderRepository saleOrderRepository;
     private final ProductRepository productRepository;
 
     @Override
@@ -31,10 +33,10 @@ public class OverviewService implements IOverviewService {
         return new Overview(
                 new MonthlySales(monthlySales),
                 new OrderStatistics(
-                        orderRepository.countByStatus(OrderStatus.PROCESSING),
-                        orderRepository.countByStatus(OrderStatus.DELIVERING),
-                        orderRepository.countByStatus(OrderStatus.COMPLETED),
-                        orderRepository.countByStatus(OrderStatus.CANCELLED)
+                        saleOrderRepository.countByStatus(OrderStatus.PROCESSING),
+                        saleOrderRepository.countByStatus(OrderStatus.DELIVERING),
+                        saleOrderRepository.countByStatus(OrderStatus.COMPLETED),
+                        saleOrderRepository.countByStatus(OrderStatus.CANCELLED)
                 ),
                 orderRepository.findTop10CustomersByTotalOrderValue()
                         .stream().map(objects -> (
