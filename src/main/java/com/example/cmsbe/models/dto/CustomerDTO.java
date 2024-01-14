@@ -5,6 +5,7 @@ import com.example.cmsbe.models.Debt;
 import com.example.cmsbe.models.Order;
 import com.example.cmsbe.models.SaleOrder;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class CustomerDTO {
     private Integer id;
     private String name;
@@ -25,7 +27,9 @@ public class CustomerDTO {
     private List<DebtDTO> debts = new ArrayList<>();
     private boolean isDeleted;
 
+
     public CustomerDTO(Customer customer) {
+//        System.out.println(customer.getOrders());
         this.id = customer.getId();
         this.name = customer.getName();
         this.phone = customer.getPhone();

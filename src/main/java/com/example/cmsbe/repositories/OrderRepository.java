@@ -25,7 +25,6 @@ public interface OrderRepository<T extends Order> extends JpaRepository<T, Integ
             )
     List<Object[]> getMonthlySales();
 
-    long countByStatus(OrderStatus status);
     @Query(value = "SELECT c.id, c.name, c.phone, c.date_of_birth, c.contact_address, c.tax_code, c.is_deleted, COUNT(*) AS totalOrderAmount, SUM(o.total) as totalOrderValue" +
             "            FROM customer c LEFT JOIN order_table as o ON o.customer_id = c.id" +
             "            WHERE o.status = 'COMPLETED' AND o.order_type = 'SALE'" +
