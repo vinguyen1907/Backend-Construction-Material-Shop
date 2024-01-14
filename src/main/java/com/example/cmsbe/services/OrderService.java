@@ -49,9 +49,15 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public OrderDTO getOrderById(Integer id) {
+    public OrderDTO getOrderDTOById(Integer id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Order with ID " + id + " not found.")).toDTO();
+    }
+
+    @Override
+    public Order getOrderById(Integer id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Order with ID " + id + " not found."));
     }
 
     @Override

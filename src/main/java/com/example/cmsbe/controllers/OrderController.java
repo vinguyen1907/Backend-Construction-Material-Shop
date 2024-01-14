@@ -1,17 +1,25 @@
 package com.example.cmsbe.controllers;
 
 import com.example.cmsbe.models.Order;
+import com.example.cmsbe.models.SaleOrder;
 import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.dto.OrderRequestDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.models.enums.OrderType;
+import com.example.cmsbe.services.generators.InvoicePdfGenerator;
 import com.example.cmsbe.services.interfaces.IOrderService;
+import com.itextpdf.text.DocumentException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -37,7 +45,7 @@ public class OrderController {
 
     @GetMapping("/{orderId}")
     public ResponseEntity<OrderDTO> getOrderById(@PathVariable Integer orderId) throws EntityNotFoundException {
-        return ResponseEntity.ok(orderService.getOrderById(orderId));
+        return ResponseEntity.ok(orderService.getOrderDTOById(orderId));
     }
 
     @GetMapping("newest/{size}")
@@ -64,6 +72,21 @@ public class OrderController {
             @RequestParam(name = "status") OrderStatus newStatus
     ) throws EntityNotFoundException {
         return ResponseEntity.ok(orderService.updateOrder(orderId, newStatus));
+    }
+
+    @GetMapping("/export/invoice/pdf/{orderId}")
+    public ResponseEntity<byte[]> exportPdf(
+            @PathVariable Integer orderId
+    ) throws IOException, DocumentException {
+        SaleOrder order = (SaleOrder) orderService.getOrderById(orderId);
+
+//        List<Map<String, Object>> queryResults = myService.executeQuery(request);
+        ByteArrayOutputStream pdfStream = new InvoicePdfGenerator(order).generateInvoicePDF();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_PDF);
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=invoice_" + orderId  + ".pdf");
+        headers.setContentLength(pdfStream.size());
+        return new ResponseEntity<>(pdfStream.toByteArray(), headers, HttpStatus.OK);
     }
 
 //    @DeleteMapping("/{orderId}")

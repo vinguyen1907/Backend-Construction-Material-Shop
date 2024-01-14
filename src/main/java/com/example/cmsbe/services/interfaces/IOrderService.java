@@ -11,7 +11,8 @@ import java.util.List;
 
 public interface  IOrderService {
     PaginationDTO<Order> getAllOrders(int page, int size);
-    OrderDTO getOrderById(Integer id);
+    OrderDTO getOrderDTOById(Integer id);
+    Order getOrderById(Integer id);
     OrderDTO createOrder(Order order);
     Order updateOrder(Integer orderId, OrderStatus newStatus);
     void deleteOrder(Integer orderId);
