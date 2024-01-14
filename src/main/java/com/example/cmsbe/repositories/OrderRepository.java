@@ -21,7 +21,8 @@ public interface OrderRepository<T extends Order> extends JpaRepository<T, Integ
     @Query("select  SUM(total), MONTH(createdTime), YEAR(createdTime) " +
                     "FROM Order " +
                     "WHERE status = 'COMPLETED' AND orderType = 'SALE'" +
-                    "GROUP BY YEAR(createdTime), MONTH(createdTime)"
+                    "GROUP BY YEAR(createdTime), MONTH(createdTime)" +
+                    "ORDER BY YEAR(createdTime) asc , MONTH(createdTime)"
             )
     List<Object[]> getMonthlySales();
 
