@@ -235,7 +235,7 @@ public class InvoicePdfGenerator {
         orderDetailsTable.addCell(createCell("Total:", boldFont));
         orderDetailsTable.addCell(createCell("$" + DecimalUtil.format(order.getTotal()), regularFont));
         orderDetailsTable.addCell(createCell("Debt:", boldFont));
-        orderDetailsTable.addCell(createCell("$" + DecimalUtil.format(order.getDebt().getAmount()), regularFont));
+        orderDetailsTable.addCell(createCell("$" + DecimalUtil.format(order.getDebt() != null  ? order.getDebt().getAmount() : 0), regularFont));
 
         // Set spacing for the table
         orderDetailsTable.setSpacingAfter(10f);
