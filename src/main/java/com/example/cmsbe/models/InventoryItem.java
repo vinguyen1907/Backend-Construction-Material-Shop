@@ -26,10 +26,10 @@ public class InventoryItem {
     @ManyToOne
     private Warehouse warehouse;
     private int quantity;
-    @Past(message = "Manufacturing date must be in the past.")
+//    @Past(message = "Manufacturing date must be in the past.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate manufacturingDate;
-    @Future(message = "Expiry date must be in the future.")
+//    @Future(message = "Expiry date must be in the future.")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate expiryDate;
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -157,14 +157,14 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Order updateOrder(Integer orderId, OrderStatus newStatus) {
+    public OrderDTO updateOrder(Integer orderId, OrderStatus newStatus) {
         Order order = orderRepository.findById(orderId).orElseThrow(() -> new EntityNotFoundException("Order with ID" + orderId + " not found."));
         order.setStatus(newStatus);
         if (order instanceof SaleOrder && newStatus == OrderStatus.CANCELLED) {
             revertInventory((SaleOrder) order);
         }
 
-        return orderRepository.save(order);
+        return orderRepository.save(order).toDTO();
     }
 
     private void revertInventory(SaleOrder order) {
