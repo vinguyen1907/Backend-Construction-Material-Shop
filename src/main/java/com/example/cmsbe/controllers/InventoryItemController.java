@@ -34,7 +34,6 @@ public class InventoryItemController {
             @RequestParam int page,
             @RequestParam int size
     ) {
-        // warehouseId == null => all warehouses
         return ResponseEntity.ok(inventoryItemService.getAllInventoryItemsByProductName(keyword, warehouseId, page, size));
     }
 

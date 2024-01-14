@@ -37,17 +37,10 @@ public class InventoryService implements IInventoryItemService {
     }
 
     @Override
-    public PaginationDTO<InventoryItem> getAllInventoryItemsByProductName(String keyword, Integer warehouseId, int page, int size) {
+    public PaginationDTO<InventoryItem> getAllInventoryItemsByProductName(String productName, Integer warehouseId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        long itemCount = inventoryItemRepository.countByProduct_NameContainingIgnoreCaseAndWarehouse_Id(keyword, warehouseId);
-        List<InventoryItem> items = inventoryItemRepository.findByProduct_NameContainingIgnoreCaseAndWarehouse_Id(keyword, warehouseId, pageable);
-        return new PaginationDTO<>(
-                itemCount / size + (itemCount % size == 0 ? 0 : 1),
-                itemCount,
-                page,
-                size,
-                items
-        );
+        var result = inventoryItemRepository.findByProductNameAndWarehouseId(productName, warehouseId, pageable);
+        return new PaginationDTO<>(result);
     }
 
     @Override
