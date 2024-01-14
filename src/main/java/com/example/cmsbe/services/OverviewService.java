@@ -1,6 +1,7 @@
 package com.example.cmsbe.services;
 
 import com.example.cmsbe.models.*;
+import com.example.cmsbe.models.dto.ValuableCustomerDTO;
 import com.example.cmsbe.models.enums.OrderStatus;
 import com.example.cmsbe.repositories.OrderRepository;
 import com.example.cmsbe.repositories.ProductRepository;
@@ -37,18 +38,14 @@ public class OverviewService implements IOverviewService {
                 ),
                 orderRepository.findTop10CustomersByTotalOrderValue()
                         .stream().map(objects -> (
-                                new Customer(
+                                new ValuableCustomerDTO(
                                         (Integer) objects[0],
                                         (String) objects[1],
                                         objects[2].toString(),
-                                        DateTimeUtil.convertToLocalDateViaMillisecond((Date) objects[3]),
-                                        (String) objects[4],
-                                        (String) objects[5],
-                                        null,
-                                        null,
-                                        (boolean) objects[6]
+                                        ((Long) objects[7]).intValue(),
+                                        (Double) objects[8]
                                 )
-                        ).toDTO())
+                        ))
                         .toList(),
 //                productRepository.getOnLowestProductStock(),
                 productRepository.getAggregatedMonthlySales()
