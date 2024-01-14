@@ -5,6 +5,7 @@ import com.example.cmsbe.models.enums.OrderType;
 import com.example.cmsbe.repositories.CustomerRepository;
 import com.example.cmsbe.repositories.OrderRepository;
 import com.example.cmsbe.repositories.ProductRepository;
+import com.example.cmsbe.repositories.SaleOrderRepository;
 import com.example.cmsbe.services.interfaces.IDashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 public class DashboardService implements IDashboardService {
     private final CustomerRepository customerRepository;
     private final OrderRepository orderRepository;
+    private final SaleOrderRepository saleOrderRepository;
     private final ProductRepository productRepository;
 
     @Override
@@ -23,7 +25,7 @@ public class DashboardService implements IDashboardService {
 
     @Override
     public long getOrderCount() {
-        return orderRepository.count();
+        return saleOrderRepository.count();
     }
 
     @Override
@@ -33,7 +35,7 @@ public class DashboardService implements IDashboardService {
 
     @Override
     public Double getRevenue() {
-        return orderRepository.sumTotalByOrderTypeAndStatus(OrderType.SALE, OrderStatus.PROCESSING);
+        return orderRepository.sumTotalByOrderTypeAndStatus(OrderType.SALE, OrderStatus.COMPLETED);
     }
 
     @Override
