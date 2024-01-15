@@ -43,8 +43,9 @@ public class OrderService implements IOrderService {
 
     @Override
     public PaginationDTO<Order> getAllOrders(int page, int size) {
-        Sort sort = Sort.by("createdTime").descending();
+        Sort sort = Sort.by("created_time").descending();
         Pageable pageable = PageRequest.of(page, size).withSort(sort);
+        System.out.println(orderRepository.findAll(pageable));
         return new PaginationDTO<>(orderRepository.findAll(pageable));
     }
 
@@ -202,13 +203,16 @@ public class OrderService implements IOrderService {
         if (endDate != null) {
             spec = spec.and((root, query, criteriaBuilder) -> criteriaBuilder.lessThan(root.get("createdTime"), endDate));
         }
+
         spec = spec.and((root, query, criteriaBuilder) -> {
+
                     query.orderBy(criteriaBuilder.desc(root.get("createdTime")));
                     return criteriaBuilder.isTrue(criteriaBuilder.literal(true));
                 }
         );
 
-        Pageable pageable = PageRequest.of(page, size);
+        Sort sort = Sort.by("createdTime").descending();
+        Pageable pageable = PageRequest.of(page, size).withSort(sort);
         var result = orderRepository.findAll(spec, pageable);
         var orders = result.getContent();
         var orderDTOs = ListUtil.convertToOrderDTOList(orders);
