@@ -18,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -99,10 +101,30 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public Customer updateCustomer(Integer id, Customer customer) {
-        customerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
+    public CustomerDTO updateCustomer(Integer id,
+                                   String customerName,
+                                   String phone,
+                                   String address,
+                                   String taxCode,
+                                   LocalDate dateOfBirth) {
+        var customer = customerRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Customer not found"));
         customer.setId(id);
-        return customerRepository.save(customer);
+        if (customerName != null) {
+            customer.setName(customerName);
+        }
+        if (phone != null) {
+            customer.setPhone(phone);
+        }
+        if (address != null) {
+            customer.setContactAddress(address);
+        }
+        if (taxCode != null) {
+            customer.setTaxCode(taxCode);
+        }
+        if (dateOfBirth != null) {
+            customer.setDateOfBirth(dateOfBirth);
+        }
+        return customerRepository.save(customer).toDTO();
     }
 
     @Override

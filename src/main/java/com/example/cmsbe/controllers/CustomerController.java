@@ -21,6 +21,8 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -65,9 +67,22 @@ public class CustomerController {
     }
 
     @PutMapping("/{customerId}")
-    public ResponseEntity<?> updateCustomer(@PathVariable Integer customerId, @RequestBody Customer customer) {
+    public ResponseEntity<?> updateCustomer(
+            @PathVariable Integer customerId,
+            @RequestParam(required = false) String customerName,
+            @RequestParam(required = false) String phone,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String taxCode,
+            @RequestParam(required = false) LocalDate dateOfBirth
+    ) {
         try {
-            return ResponseEntity.ok(customerService.updateCustomer(customerId, customer));
+            return ResponseEntity.ok(customerService.updateCustomer(customerId,
+                    customerName,
+                    phone,
+                    address,
+                    taxCode,
+                    dateOfBirth
+                    ));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (Exception e) {

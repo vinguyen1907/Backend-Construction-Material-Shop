@@ -6,6 +6,8 @@ import com.example.cmsbe.models.dto.CustomerDTO;
 import com.example.cmsbe.models.dto.OrderDTO;
 import com.example.cmsbe.models.dto.PaginationDTO;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ICustomerService {
@@ -17,6 +19,11 @@ public interface ICustomerService {
     PaginationDTO<CustomerDTO> searchCustomerByPhone(int page, int size, String phone);
     Customer getCustomerById(Integer id);
     Customer addCustomer(Customer customer);
-    Customer updateCustomer(Integer id, Customer customer);
+    CustomerDTO updateCustomer(Integer id,
+                            String customerName,
+                            String phone,
+                            String address,
+                            String taxCode,
+                            LocalDate dateOfBirth);
     void deleteCustomer(Integer id);
 }
