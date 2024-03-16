@@ -1,19 +1,23 @@
 # Construction Material Shop Management Backend
 ## Overview
+Project is used to report final project of subject Object oriented analysis and design, UIT.<br>
+* **Start time:** Nov 26th, 2023<br>
+* **End time:** Mar 8th, 2024
+
+
 <p align="center">
-  <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/captures/dashboard.png" alt="Dashboard">
   Figure 1. Dashboard
+  <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/captures/dashboard.png" alt="Dashboard">
 </p>
 
 <p align="center">
-  <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/captures/orders.png" alt="Orders">
   Figure 2. Orders
+  <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/captures/orders.png" alt="Orders">
 </p>
 
 <p align="center">
-  <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/captures/order_details.png" alt="Order details">
-  <br>
   Figure 3. Order details
+  <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/captures/order_details.png" alt="Order details">
 </p>
 
 ## System architecture
@@ -21,38 +25,42 @@
 
 ## Diagrams
 <p align="center">
-  <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/class_diagram.png" alt="Class diagram">
-  <br>
   Figure 4. Class diagram
+  <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/class_diagram.png" alt="Class diagram">
 </p>
 <p>
     <p align="center" >
-      <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/database_diagram.png" alt="Database diagram">
-      <br>
       Figure 5. Database diagram
+      <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/database_diagram.png" alt="Database diagram">
     </p>
-</p?
+</p>
+
+### Other diagrams (use case, sequence, activity) you can find here: [Diagrams](https://github.com/vinguyen1907/Backend-Construction-Material-Shop/tree/main/src/main/docs/diagrams)
+
 
 ## Setup Guide
 Follow these steps to set up Docker for this project
 
-## Step 1: Clone this project
+### Step 1: Clone this project
+```bash
+git clone https://github.com/vinguyen1907/Backend-Construction-Material-Shop
+```
 
-## Step 2: Install project
-### 1. Open project's directory in terminal
-### 2. Clean and Install to generate .jar file
+### Step 2: Install project
+#### 1. Open project's directory in terminal
+#### 2. Clean and Install to generate .jar file
 ```bash
 mvn clean install
 ```
 **_Note_**: Ensure that you have installed Maven on your device
 
-## Step 3: Set up Docker for MySQL
-### 1. Pull MySQL Image
+### Step 3: Set up Docker for MySQL
+#### 1. Pull MySQL Image
 ```bash
 docker pull mysql:latest
 ```
 
-### 2. Run MySQL Container
+#### 2. Run MySQL Container
 ```bash
 docker run \
     --name your_mysql_container \
@@ -73,13 +81,13 @@ docker run \
 
 **_Note_**: If you use root user, please remove MYSQL_USER and MYSQL_PASSWORD, add MYSQL_ALLOW_EMPTY_PASSWORD=true
 
-## Step 4: Set up Docker for Spring boot
-### 1. Build Docker image
+### Step 4: Set up Docker for Spring boot
+#### 1. Build Docker image
 ```bash
 docker build -t your_image_name .
 ```
 
-### 2. Create network
+#### 2. Create network
 ```bash
 docker network create <network-name>
 ```
@@ -88,7 +96,7 @@ Check if creating network successfully
 docker network ls
 ```
 
-### 3. Run Docker container
+#### 3. Run Docker container
 ```bash
 docker run \
     --name your_container_name \
@@ -108,3 +116,4 @@ docker run \
 * _your_docker_image_: Specify the Docker image you want to use.
 
 # Other 
+* Frontend repository: https://github.com/dkdeptrai/Frontend_Construction_Material_Shop
