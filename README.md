@@ -1,5 +1,39 @@
 # Construction Material Shop Management Backend
-## Getting started
+## Overview
+<p align="center">
+  <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/captures/dashboard.png" alt="Dashboard">
+  Figure 1. Dashboard
+</p>
+
+<p align="center">
+  <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/captures/orders.png" alt="Orders">
+  Figure 2. Orders
+</p>
+
+<p align="center">
+  <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/captures/order_details.png" alt="Order details">
+  <br>
+  Figure 3. Order details
+</p>
+
+## System architecture
+![alt text](https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/system_architecture.jpeg)
+
+## Diagrams
+<p align="center">
+  <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/class_diagram.png" alt="Class diagram">
+  <br>
+  Figure 4. Class diagram
+</p>
+<p>
+    <p align="center" >
+      <img src="https://github.com/vinguyen1907/Backend-Construction-Material-Shop/blob/main/src/main/docs/database_diagram.png" alt="Database diagram">
+      <br>
+      Figure 5. Database diagram
+    </p>
+</p?
+
+## Setup Guide
 Follow these steps to set up Docker for this project
 
 ## Step 1: Clone this project
@@ -72,3 +106,5 @@ docker run \
 * -v /host/path:/container/path: Mount a volume from the host to the container. Replace /host/path with the path on the host and /container/path with the path in the container.
 * -d: Run the container in the background (detached mode).
 * _your_docker_image_: Specify the Docker image you want to use.
+
+# Other 
